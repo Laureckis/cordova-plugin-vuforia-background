@@ -100,7 +100,10 @@ navigator.VuforiaBackgroundPlugin.startVuforia(
     alert("Error: " + data);
   }
 );
+```
 
+From antother JavaScript file, that is loaded by `vuforia_index.html`:
+```javascript
 document.addEventListener('vuforiaready', function(){
     // code to execute when vuforia is loaded
 }, false);
@@ -111,7 +114,6 @@ document.addEventListener('vuforiamarker', function(event){
 
     // tracking will be paused now, call navigator.VuforiaBackgroundPlugin.startVuforiaTrackers() to resume when needed, else this event will be triggered each frame the marker is in view
 }, false);
-
 ```
 
 > **NOTES:**
