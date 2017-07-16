@@ -26,7 +26,7 @@ import com.vuforia.Tracker;
 import com.vuforia.TrackerManager;
 import com.vuforia.Vuforia;
 
-public class VuforiaPlugin extends CordovaPlugin {
+public class VuforiaBakcgroundPlugin extends CordovaPlugin {
     static final String LOGTAG = "CordovaVuforiaBgPlugin";
 
     // Some public static variables used to communicate state
