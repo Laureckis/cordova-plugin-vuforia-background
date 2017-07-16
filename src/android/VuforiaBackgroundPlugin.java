@@ -61,7 +61,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
      */
     private static ApplicationSession session;
 
-    public VuforiaPlugin() {
+    public VuforiaBakcgroundPlugin() {
     }
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -108,7 +108,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
     // Start our Vuforia activities
     public void launchVuforiaCordova(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         // If we are starting Vuforia, set the public variable referencing our start callback for later use
-        VuforiaPlugin.persistantVuforiaStartCallback = callbackContext;
+        VuforiaBakcgroundPlugin.persistantVuforiaStartCallback = callbackContext;
 
         ACTION = action;
         ARGS = args;
@@ -363,7 +363,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
      * @param session
      */
     public static void setSession(ApplicationSession session) {
-        VuforiaPlugin.session = session;
+        VuforiaBakcgroundPlugin.session = session;
     }
 
 }
