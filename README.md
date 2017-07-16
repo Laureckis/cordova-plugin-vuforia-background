@@ -5,6 +5,8 @@ elements transparent will allow you to use HTML UI on your Vuforia app.
 
 The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
 
+Example app is available a [Cordova-Plguin-Vuforia-Background-Example repo][example-repo-link].
+
 
 ### Contents
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -337,6 +339,7 @@ Cordova-Plugin-Vuforia-Background is licensed under the [MIT License][info-licen
 [cordova-orientation-issue]: https://github.com/apache/cordova-lib/pull/260
 [cordova-plugin-vuforia]: https://github.com/mattrayner/cordova-plugin-vuforia
 [matt-rayner]: https://github.com/mattrayner
+[example-repo-linl]: github.com:Laureckis/cordova-plugin-vuforia-background-example
 
 [start-vuforia-doc-link]: #startvuforia---start-your-vuforia-session
 [stop-vuforia-doc-link]: #stopvuforia---stop-your-vuforia-session
