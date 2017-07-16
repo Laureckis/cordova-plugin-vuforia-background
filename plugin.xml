@@ -31,7 +31,7 @@
         <!-- Plugin Config -->
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="VuforiaBackgroundPlugin" >
-                <param name="android-package" value="com.mattrayner.vuforia.VuforiaBackgroundPlugin"/>
+                <param name="android-package" value="lv.aspired.vuforia.VuforiaBackgroundPlugin"/>
             </feature>
         </config-file>
 
@@ -46,7 +46,7 @@
         </config-file>
 
         <!-- Plugin Source -->
-        <source-file src="src/android/VuforiaPlugin.java" target-dir="src/lv/aspired/vuforia" />
+        <source-file src="src/android/VuforiaBackgroundPlugin.java" target-dir="src/lv/aspired/vuforia" />
 
         <!-- Assets -->
         <resource-file src="src/android/res/layout/camera_overlay.xml" target="res/layout/camera_overlay.xml" />
@@ -109,14 +109,14 @@
 
 
         <resource-file src="src/ios/VuforiaPlugin.bundle" />
-        <resource-file src="src/ios/Utils/shaders/Line.fragsh" target-dir="com.mattrayner.vuforia/shader" />
-        <resource-file src="src/ios/Utils/shaders/Line.vertsh" target-dir="com.mattrayner.vuforia/shader" />
-        <resource-file src="src/ios/Utils/shaders/Simple.fragsh" target-dir="com.mattrayner.vuforia" />
-        <resource-file src="src/ios/Utils/shaders/Simple.vertsh" target-dir="com.mattrayner.vuforia" />
+        <resource-file src="src/ios/Utils/shaders/Line.fragsh" target-dir="lv.aspired.vuforia/shader" />
+        <resource-file src="src/ios/Utils/shaders/Line.vertsh" target-dir="lv.aspired.vuforia/shader" />
+        <resource-file src="src/ios/Utils/shaders/Simple.fragsh" target-dir="lv.aspired.vuforia" />
+        <resource-file src="src/ios/Utils/shaders/Simple.vertsh" target-dir="lv.aspired.vuforia" />
 
 
-        <resource-file src="targets/PluginTest.dat" target-dir="com.mattrayner.vuforia" />
-        <resource-file src="targets/PluginTest.xml" target-dir="com.mattrayner.vuforia" />
+        <resource-file src="targets/PluginTest.dat" target-dir="lv.aspired.vuforia" />
+        <resource-file src="targets/PluginTest.xml" target-dir="lv.aspired.vuforia" />
 
         <resource-file src="src/ios/Assets/ImageTargets/close-button.png" target-dir="Resources" />
         <resource-file src="src/ios/Assets/ImageTargets/iOSDevices.png" target-dir="Resources" />
