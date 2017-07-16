@@ -70,6 +70,8 @@ Method | Description
 [`stopVuforiaTrackers`][stop-vuforia-trackers-doc-link] | **Stop the Vuforia tracking system** - Leave the Vuforia camera running, just stop searching for images.
 [`startVuforiaTrackers`][start-vuforia-trackers-doc-link] | **Start the Vuforia tracking system** - Leave the Vuforia camera running and start searching for images again.
 [`updateVuforiaTargets`][update-vuforia-targets-doc-link] | **Update Vuforia target list** - Update the list of images we are searching for, but leave the camera and Vuforia running.
+[`pauseAR`][pause-ar-doc-link] | **Pauses AR tracking and freezes the camera.** - Useful for when you do not need Vuforia in all sections of the app.
+[`resumeAR`][resume-ar-doc-link] | **Resumes AR tracking and unfreezes the camera.** - Useful for when you do not need Vuforia in all sections of the app.
 
 #### `startVuforia` - Start your Vuforia session
 From within your JavaScript file, add the following to launch the [Vuforia][vuforia] session with Cordova WebView overlay.
@@ -154,7 +156,7 @@ From within your JavaScript file, add the following to stop the [Vuforia][vufori
 **Why?** - Well, you could pair this with a setTimeout to give users a certain amount of time to search for an image. Or you can pair it with the `autostopOnImageFound` option within `startVuforia` to have more granular control over when Vuforia actually stops.
 
 ```javascript
-navigator.VuforiaPlugin.stopVuforia(
+navigator.VuforiaBakcgroundPlugin.stopVuforia(
   function (data) {
     console.log(data);
 
@@ -181,7 +183,7 @@ From within your JavaScript file, add the following to stop the [Vuforia][vufori
 **Why?** - Well, you may want to play a sound after an image rec, or have some kind of delay between recognitions.
 
 ```javascript
-navigator.VuforiaPlugin.stopVuforiaTrackers(
+navigator.VuforiaBakcgroundPlugin.stopVuforiaTrackers(
   function (data) {
     console.log(data);
     
@@ -200,7 +202,7 @@ From within your JavaScript file, add the following to start the [Vuforia][vufor
 **Why?** - Well, you may want to play a sound after an image rec, or have some kind of delay between recognitions.
 
 ```javascript
-navigator.VuforiaPlugin.startVuforiaTrackers(
+navigator.VuforiaBakcgroundPlugin.startVuforiaTrackers(
   function (data) {
     console.log(data);
     
@@ -219,12 +221,46 @@ From within your JavaScript file, add the following to update the list of images
 **Why?** - Well, you may want to change the images you are searching for after launching Vuforia. For example, consider a scenario where a game requires users to scan images one after another in a certain order. For example, a museum app may want you to scan all of the Rembrandt paintings in a room from oldest to newest to unlock some content. This method can offload the burdon of decision from your app to Vuforia, instead of writing login in your JavaScript, we're letting Vuforia take care of it.
 
 ```javascript
-navigator.VuforiaPlugin.updateVuforiaTargets(
+navigator.VuforiaBakcgroundPlugin.updateVuforiaTargets(
     ['iceland', 'canterbury-grass'], // Only return a success if the 'iceland' or 'canterbury-grass' images are found.
     function(data){
         console.log(data);
         
         alert('Updated trackers');
+    },
+    function(data) {
+        alert("Error: " + data);
+    }
+);
+```
+
+#### `pauseAR` - Pauses the AR tracking and freezes the camera.
+
+**Why?** - You may want to not use the camera for all sections of your app.
+
+```javascript
+navigator.VuforiaBakcgroundPlugin.pauseAR(
+    function(data){
+        console.log(data);
+        
+        alert('AR Paused');
+    },
+    function(data) {
+        alert("Error: " + data);
+    }
+);
+```
+
+#### `resumeAR` - Resumes AR tracking and unfreezes the camera.
+
+**Why?** - You may want to not use the camera for all sections of your app.
+
+```javascript
+navigator.VuforiaBakcgroundPlugin.pauseAR(
+    function(data){
+        console.log(data);
+        
+        alert('AR Paused');
     },
     function(data) {
         alert("Error: " + data);
@@ -303,3 +339,5 @@ Cordova-Plugin-Vuforia is licensed under the [MIT License][info-license].
 [stop-vuforia-trackers-doc-link]: #stopvuforiatrackers---stop-vuforia-image-trackers
 [start-vuforia-trackers-doc-link]: #startvuforiatrackers---start-vuforia-image-trackers
 [update-vuforia-targets-doc-link]: #updatevuforiatargets---update-the-list-of-targets-vuforia-is-searching-for
+[pause-ar-doc-link]: #pausear---pause-ar
+[resume-ar-doc-link]: #resumear---resume-ar
