@@ -19,7 +19,7 @@ Example app is available a [Cordova-Plguin-Vuforia-Background-Example repo][exam
 - [Getting Started](#getting-started)
   - [Plugin Installation](#plugin-installation)
   - [JavaScript](#javascript)
-    - [`startVuforia` - Start your Vuforia session](#startvuforia---start-your-vuforia-session)
+    - [`launchVuforia` - Start your Vuforia session](#startvuforia---start-your-vuforia-session)
       - [`options` object](#options-object)
         - [Examples](#examples)
       - [Success callback `data` API](#success-callback-data-api)
@@ -32,7 +32,7 @@ Example app is available a [Cordova-Plguin-Vuforia-Background-Example repo][exam
   - [Using your own data](#using-your-own-data)
     - [`www/targets/`](#wwwtargets)
     - [JavaScript](#javascript-1)
-      - [`startVuforia(...)`](#startvuforia)
+      - [`launchVuforia(...)`](#launchVuforia)
     - [`config.xml`](#configxml)
 - [Contributing](#contributing)
 - [License](#license)
@@ -77,7 +77,7 @@ Method | Description
 [`pauseAR`][pause-ar-doc-link] | **Pauses AR tracking and freezes the camera.** - Useful for when you do not need Vuforia in all sections of the app.
 [`resumeAR`][resume-ar-doc-link] | **Resumes AR tracking and unfreezes the camera.** - Useful for when you do not need Vuforia in all sections of the app.
 
-#### `startVuforia` - Start your Vuforia session
+#### `launchVuforia` - Start your Vuforia session
 From within your JavaScript file, add the following to launch the [Vuforia][vuforia] session with Cordova WebView overlay.
 
 ```javascript
@@ -87,7 +87,7 @@ var options = {
   vuforiaLicense: 'YOUR_VUFORIA_KEY'
 };
 
-navigator.VuforiaBackgroundPlugin.startVuforia(
+navigator.VuforiaBackgroundPlugin.launchVuforia(
   options,
   function(data) {
     // To see exactly what `data` can return, see 'Success callback `data` API' within the plugin's documentation.
@@ -143,7 +143,7 @@ var options = {
 ```
 
 ##### Success callback `data` API
-`startVuforia` takes two callbacks - one for `success` and one for `faliure`. When `success` is called, a `data` object is passed to Cordova. This will be in one of the following formats:
+`launchVuforia` takes two callbacks - one for `success` and one for `faliure`. When `success` is called, a `data` object is passed to Cordova. This will be in one of the following formats:
 
 **Manually Closed** - when a user has exited Vuforia via pressing the close/back button, `data` returns: 
 
@@ -159,7 +159,7 @@ var options = {
 #### `stopVuforia` - Stop your Vuforia session
 From within your JavaScript file, add the following to stop the [Vuforia][vuforia] session. `stopVuforia` takes two callbacks - one for `success` and one for `faliure`.
 
-**Why?** - Well, you could pair this with a setTimeout to give users a certain amount of time to search for an image. Or you can pair it with the `autostopOnImageFound` option within `startVuforia` to have more granular control over when Vuforia actually stops.
+**Why?** - Well, you could pair this with a setTimeout to give users a certain amount of time to search for an image.
 
 ```javascript
 navigator.VuforiaBakcgroundPlugin.stopVuforia(
