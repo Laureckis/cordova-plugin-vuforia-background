@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-vuforia-background"
-        version="0.0.3">
+        version="0.0.4">
     <name>Vuforia Background</name>
     <description>Cordova Vuforia Background Plugin</description>
     <license>MIT</license>
@@ -14,7 +14,7 @@
     <author>Aļģis Laureckis</author>
 
     <info>
-        Cordova Vuforia Background Plugin version 0.0.3, Copyright (C) 2016 Matthew Rayner
+        Cordova Vuforia Background Plugin version 0.0.4, Copyright (C) 2016 Matthew Rayner
         based on https://github.com/mattrayner/cordova-plugin-vuforia by Matt Rayner
         Cordova Vuforia Background Plugin comes with ABSOLUTELY NO WARRANTY; see the
         LICENSE file for more information.
@@ -30,7 +30,7 @@
     <platform name="android">
         <!-- Plugin Config -->
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="lv.aspired.vuforia.VuforiaBackgroundPlugin" >
+            <feature name="VuforiaBackgroundPlugin" >
                 <param name="android-package" value="lv.aspired.vuforia.VuforiaBackgroundPlugin"/>
             </feature>
         </config-file>
@@ -46,7 +46,7 @@
         </config-file>
 
         <!-- Plugin Source -->
-        <source-file src="src/android/VuforiaBackgroundPlugin.java" target-dir="src/lv/aspired/vuforia" />
+        <source-file src="src/android/lv/aspired/vuforia/VuforiaBackgroundPlugin.java" target-dir="src/lv/aspired/vuforia" />
 
         <!-- Assets -->
         <resource-file src="src/android/res/layout/camera_overlay.xml" target="res/layout/camera_overlay.xml" />
