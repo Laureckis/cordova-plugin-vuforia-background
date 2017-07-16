@@ -3,7 +3,7 @@ Cordova-Plugin-Vuforia-Background is a [Cordova][cordova] plugin that uses [Vufo
 The plugin puts the Vuforia camera view below the Cordova WebView. Settings your HTML
 elements transparent will allow you to use HTML UI on your Vuforia app.
 
-The plugin is based on the [Cordova-Plugin-Vuforia-Background][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
+The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
 
 
 ### Contents
