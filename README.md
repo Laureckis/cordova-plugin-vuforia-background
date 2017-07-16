@@ -1,9 +1,9 @@
 # Cordova Vuforia Background Plugin
-Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition. 
+Cordova-Plugin-Vuforia-Background is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition. 
 The plugin puts the Vuforia camera view below the Cordova WebView. Settings your HTML
 elements transparent will allow you to use HTML UI on your Vuforia app.
 
-The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
+The plugin is based on the [Cordova-Plugin-Vuforia-Background][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
 
 
 ### Contents
@@ -25,8 +25,8 @@ The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [
     - [`stopVuforiaTrackers` - Stop Vuforia image trackers](#stopvuforiatrackers---stop-vuforia-image-trackers)
     - [`startVuforiaTrackers` - Start Vuforia image trackers](#startvuforiatrackers---start-vuforia-image-trackers)
     - [`updateVuforiaTargets` - Update the list of targets Vuforia is searching for](#updatevuforiatargets---update-the-list-of-targets-vuforia-is-searching-for)
-    - [`pauseAR` - Pause AR](#pausear---pause-ar)
-    - [`resumeAR` - Resume AR](#resumear---resume-ar)
+    - [`pauseAR` - Pause AR](#pausear---pauses-the-ar-tracking-and-freezes-the-camera)
+    - [`resumeAR` - Resume AR](#resumear---resumes-ar-tracking-and-unfreezes-the-camera)
   - [Using your own data](#using-your-own-data)
     - [`www/targets/`](#wwwtargets)
     - [JavaScript](#javascript-1)
@@ -42,7 +42,7 @@ Android (Minimum 4) (iOS coming soon)
 
 
 ## Requirements
-> **NOTE:** You will require an Android or iOS device for development and testing. Cordova-Plugin-Vuforia-Background requires hardware and software support that is not present in either the iOS or Android simulators.
+> **NOTE:** You will require an Android or iOS device for development and testing. Cordova-Plugin-Vuforia-Background-Background requires hardware and software support that is not present in either the iOS or Android simulators.
 
 Cordova-Plugin-Background-Vuforia requires the following:
 * [npm][npm]
@@ -52,8 +52,8 @@ Cordova-Plugin-Background-Vuforia requires the following:
   * Or if you want to upgrade to the latest version on a platform-by-platform basis, see either [upgrading to cordova-ios 4][upgrading-ios] or [upgrading to cordova-android 5][upgrading-android].
 
 ### Dependencies
-At present there is one major dependency for Cordova-Plugin-Vuforia:
-* [Cordova-Plugin-Vuforia-SDK][cordova-plugin-vuforia-sdk] - This plugin is used to inject the Vuforia SDK into our Cordova applications
+At present there is one major dependency for Cordova-Plugin-Vuforia-Background:
+* [Cordova-Plugin-Vuforia-Background-SDK][cordova-plugin-vuforia-sdk] - This plugin is used to inject the Vuforia SDK into our Cordova applications
 
 
 ## Getting Started
@@ -63,7 +63,7 @@ cordova plugin add https://github.com/Laureckis/cordova-plugin-vuforia-backgroun
 ```
 
 ### JavaScript
-Cordova-Plugin-Vuforia-Background comes with the following JavaScript methods:
+Cordova-Plugin-Vuforia-Background-Background comes with the following JavaScript methods:
 
 Method | Description
 --- | ---
@@ -318,7 +318,7 @@ If you wish to submit a bug fix or feature, you can create a pull request and it
 
 
 ## License
-Cordova-Plugin-Vuforia is licensed under the [MIT License][info-license].
+Cordova-Plugin-Vuforia-Background is licensed under the [MIT License][info-license].
 
 [logo]: https://cdn.rawgit.com/mattrayner/cordova-plugin-vuforia/d14d00720569fea02d29cded4de3c6e617c87537/images/logo.svg
 
@@ -341,5 +341,5 @@ Cordova-Plugin-Vuforia is licensed under the [MIT License][info-license].
 [stop-vuforia-trackers-doc-link]: #stopvuforiatrackers---stop-vuforia-image-trackers
 [start-vuforia-trackers-doc-link]: #startvuforiatrackers---start-vuforia-image-trackers
 [update-vuforia-targets-doc-link]: #updatevuforiatargets---update-the-list-of-targets-vuforia-is-searching-for
-[pause-ar-doc-link]: #pausear---pause-ar
-[resume-ar-doc-link]: #resumear---resume-ar
+[pause-ar-doc-link]: #pausear---pauses-the-ar-tracking-and-freezes-the-camera
+[resume-ar-doc-link]: #resumear---resumes-ar-tracking-and-unfreezes-the-camera
