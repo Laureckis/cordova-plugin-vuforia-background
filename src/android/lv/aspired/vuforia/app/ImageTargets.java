@@ -5,7 +5,7 @@ Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
 and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
 ===============================================================================*/
 
-package com.mattrayner.vuforia.app;
+package lv.aspired.vuforia.app;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,16 +53,23 @@ import com.vuforia.Trackable;
 import com.vuforia.Tracker;
 import com.vuforia.TrackerManager;
 import com.vuforia.Vuforia;
-import com.mattrayner.vuforia.app.ApplicationControl;
-import com.mattrayner.vuforia.app.ApplicationException;
-import com.mattrayner.vuforia.app.ApplicationSession;
-import com.mattrayner.vuforia.app.utils.LoadingDialogHandler;
-import com.mattrayner.vuforia.app.utils.ApplicationGLView;
-import com.mattrayner.vuforia.app.utils.Texture;
+import lv.aspired.vuforia.app.ApplicationControl;
+import lv.aspired.vuforia.app.ApplicationException;
+import lv.aspired.vuforia.app.ApplicationSession;
+import lv.aspired.vuforia.app.utils.LoadingDialogHandler;
+import lv.aspired.vuforia.app.utils.ApplicationGLView;
+import lv.aspired.vuforia.app.utils.Texture;
 
-import com.mattrayner.vuforia.VuforiaPlugin;
+import lv.aspired.vuforia.VuforiaPlugin;
 
-public class ImageTargets extends Activity implements ApplicationControl
+import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.CordovaWebViewImpl;
+import org.apache.cordova.PluginResult;
+import org.apache.cordova.engine.SystemWebView;
+import org.apache.cordova.engine.SystemWebViewEngine;
+
+public class ImageTargets extends CordovaActivity implements ApplicationControl
 {
     private static final String LOGTAG = "ImageTargets";
     private static final String FILE_PROTOCOL = "file://";
@@ -106,18 +114,6 @@ public class ImageTargets extends Activity implements ApplicationControl
     // Array of target names
     String mTargets;
 
-    // Overlay message string
-    String mOverlayMessage;
-
-    // Display button boolean
-    Boolean mDisplayCloseButton;
-
-    // Display devices icon image
-    Boolean mDisplayDevicesIcon;
-
-    // Stop the activity
-    Boolean mAutostopOnImageFound;
-
     // Vuforia license key
     String mLicenseKey;
 
@@ -145,7 +141,7 @@ public class ImageTargets extends Activity implements ApplicationControl
     // Called when the activity first starts or the user navigates back to an
     // activity.
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
@@ -167,6 +163,7 @@ public class ImageTargets extends Activity implements ApplicationControl
 
         try {
             vuforiaAppSession = new ApplicationSession(this, mLicenseKey);
+            VuforiaPlugin.setSession(vuforiaAppSession);
         } catch(Exception e) {
             Intent mIntent = new Intent();
             mIntent.putExtra("name", "VUFORIA ERROR");
@@ -177,16 +174,11 @@ public class ImageTargets extends Activity implements ApplicationControl
         //Get the passed in targets file
         String target_file = intent.getStringExtra("IMAGE_TARGET_FILE");
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
-        mOverlayMessage = intent.getStringExtra("OVERLAY_TEXT");
-        mDisplayCloseButton = intent.getBooleanExtra("DISPLAY_CLOSE_BUTTON", true);
-        mDisplayDevicesIcon = intent.getBooleanExtra("DISPLAY_DEVICES_ICON", true);
-        mAutostopOnImageFound = intent.getBooleanExtra("STOP_AFTER_IMAGE_FOUND", true);
 
         startLoadingAnimation();
 
         Log.d(LOGTAG, "MRAY :: VUFORIA RECEIVED FILE: " + target_file);
         Log.d(LOGTAG, "MRAY :: VUTORIA TARGETS: " + mTargets);
-        Log.d(LOGTAG, "MRAY :: OVERLAY MESSAGE: " + mOverlayMessage);
         mDatasetStrings.add(target_file);
 
         vuforiaAppSession
@@ -197,13 +189,14 @@ public class ImageTargets extends Activity implements ApplicationControl
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();
 
-        mIsDroidDevice = android.os.Build.MODEL.toLowerCase().startsWith(
-            "droid");
+        mIsDroidDevice = android.os.Build.MODEL.toLowerCase().startsWith("droid");
 
+        launchUrl = "file:///android_asset/www/vuforia_index.html";
+        loadUrl(launchUrl);
     }
 
     // Process Single Tap event to trigger autofocus
-    private class GestureListener extends
+    public class GestureListener extends
         GestureDetector.SimpleOnGestureListener {
         // Used to set autofocus one second after a manual focus is triggered
         private final Handler autofocusHandler = new Handler();
@@ -340,7 +333,7 @@ public class ImageTargets extends Activity implements ApplicationControl
 
     // The final call you receive before your activity is destroyed.
     @Override
-    protected void onDestroy()
+    public void onDestroy()
     {
         Log.d(LOGTAG, "onDestroy");
         super.onDestroy();
@@ -377,7 +370,6 @@ public class ImageTargets extends Activity implements ApplicationControl
 
     }
 
-
     private void startLoadingAnimation()
     {
         // Get the project's package name and a reference to it's resources
@@ -400,28 +392,9 @@ public class ImageTargets extends Activity implements ApplicationControl
         loadingDialogHandler
             .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
-        // Gets a reference to the overlay text
-        TextView overlayText = (TextView) mUILayout.findViewById(resources.getIdentifier("overlay_message_top", "id", package_name));
-
-        Log.d(LOGTAG, "Overlay Text: "+mOverlayMessage);
-
-        // Hide the close button if needed
-        Button closeButton = (Button) mUILayout.findViewById(resources.getIdentifier("close_button_top", "id", package_name));
-        if(!mDisplayCloseButton)
-            closeButton.setVisibility(View.GONE);
-
-        ImageView devicesIconImage = (ImageView) mUILayout.findViewById(resources.getIdentifier("devices_icon_top", "id", package_name));
-
-        if(!mDisplayDevicesIcon)
-            devicesIconImage.setVisibility(View.GONE);
-        // Updates the overlay message with the text passed-in
-        overlayText.setText(mOverlayMessage);
-
-        // If the message doesn't exist/is empty, set the black overlay container to be nearly transparent.
-        LinearLayout overlayContainer = (LinearLayout) mUILayout.findViewById(resources.getIdentifier("layout_top", "id", package_name));
-        if(overlayText == null || overlayText.getText().equals("")) {
-            overlayContainer.setBackgroundColor(Color.parseColor("#00000000"));
-        }
+        SystemWebView wv = (SystemWebView) mUILayout.findViewById(R.id.cordovaWebView);
+        wv.setBackgroundColor(Color.TRANSPARENT);
+        wv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -556,6 +529,7 @@ public class ImageTargets extends Activity implements ApplicationControl
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
 
+            VuforiaPlugin.readyCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         } else
         {
             Log.e(LOGTAG, exception.getString());
@@ -588,7 +562,7 @@ public class ImageTargets extends Activity implements ApplicationControl
                     .setTitle("Error")
                     .setCancelable(false)
                     .setIcon(0)
-                    .setPositiveButton(resources.getIdentifier("button_OK", "string", package_name),
+                    .setPositiveButton("OK",
                         new DialogInterface.OnClickListener()
                         {
                             public void onClick(DialogInterface dialog, int id)
@@ -649,37 +623,6 @@ public class ImageTargets extends Activity implements ApplicationControl
         }
         return result;
     }
-
-
-    @Override
-    public boolean doStartTrackers()
-    {
-        // Indicate if the trackers were started correctly
-        boolean result = true;
-
-        Tracker objectTracker = TrackerManager.getInstance().getTracker(
-            ObjectTracker.getClassType());
-        if (objectTracker != null)
-            objectTracker.start();
-
-        return result;
-    }
-
-
-    @Override
-    public boolean doStopTrackers()
-    {
-        // Indicate if the trackers were stopped correctly
-        boolean result = true;
-
-        Tracker objectTracker = TrackerManager.getInstance().getTracker(
-            ObjectTracker.getClassType());
-        if (objectTracker != null)
-            objectTracker.stop();
-
-        return result;
-    }
-
 
     @Override
     public boolean doDeinitTrackers()
@@ -746,23 +689,24 @@ public class ImageTargets extends Activity implements ApplicationControl
         this.setResult(0, resultIntent);
 
         doStopTrackers();
-
-        Log.d(LOGTAG, "mAuto Stop On Image Found: " + mAutostopOnImageFound);
-
-        if(mAutostopOnImageFound) {
-            Vuforia.deinit();
-
-            finish();
-        } else {
-            Log.d(LOGTAG, "Sending repeat callback");
-
-            VuforiaPlugin.sendImageFoundUpdate(imageName);
-        }
+        VuforiaPlugin.sendImageFoundUpdate(imageName);
     }
 
     public void doUpdateTargets(String targets) {
         mTargets = targets;
 
         mRenderer.updateTargetStrings(mTargets);
+    }
+
+
+    @Override
+    protected CordovaWebView makeWebView() {
+        SystemWebView webView = (SystemWebView) findViewById(R.id.cordovaWebView);
+        return new CordovaWebViewImpl(new SystemWebViewEngine(webView));
+    }
+
+    @Override
+    protected void createViews() {
+        appView.getView().requestFocusFromTouch();
     }
 }

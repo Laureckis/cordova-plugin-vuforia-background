@@ -18,18 +18,20 @@ import android.util.Log;
 import android.Manifest;
 import android.Manifest.permission;
 
+import com.mattrayner.vuforia.app.ApplicationSession;
 import com.mattrayner.vuforia.app.ImageTargets;
+import com.vuforia.CameraDevice;
+import com.vuforia.ObjectTracker;
+import com.vuforia.Tracker;
+import com.vuforia.TrackerManager;
+import com.vuforia.Vuforia;
 
 public class VuforiaPlugin extends CordovaPlugin {
-    static final String LOGTAG = "CordovaVuforiaPlugin";
+    static final String LOGTAG = "CordovaVuforiaBgPlugin";
 
     // Some public static variables used to communicate state
     public static final String CAMERA = Manifest.permission.CAMERA;
     public static final String PLUGIN_ACTION = "org.cordova.plugin.vuforia.action";
-    public static final String DISMISS_ACTION = "dismiss";
-    public static final String PAUSE_ACTION = "pause";
-    public static final String RESUME_ACTION = "resume";
-    public static final String UPDATE_TARGETS_ACTION = "update_targets";
 
     // Save some ENUM values to describe plugin results
     public static final int IMAGE_REC_RESULT = 0;
@@ -51,8 +53,13 @@ public class VuforiaPlugin extends CordovaPlugin {
 
     // Internal variables for holding state
     private boolean vuforiaStarted = false;
-    private boolean autostopOnImageFound = true;
     CallbackContext callback;
+    public static CallbackContext readyCallback;
+
+    /**
+     * The vuforia sessions.
+     */
+    private static ApplicationSession session;
 
     public VuforiaPlugin() {
     }
@@ -68,8 +75,8 @@ public class VuforiaPlugin extends CordovaPlugin {
         callback = callbackContext;
 
         // Handle all expected actions
-        if(action.equals("cordovaStartVuforia")) {
-            startVuforia(action, args, callbackContext);
+        if(action.equals("launchVuforiaCordova")) {
+            launchVuforiaCordova(action, args, callbackContext);
         }
         else if(action.equals("cordovaStopVuforia")) {
             stopVuforia(action, args, callbackContext);
@@ -83,7 +90,15 @@ public class VuforiaPlugin extends CordovaPlugin {
         else if(action.equals("cordovaUpdateTargets")) {
             updateVuforiaTargets(action, args, callbackContext);
         }
-        else {
+        else if(action.equals("pauseAR")) {
+            pauseAR();
+        }
+        else if(action.equals("resumeAr")) {
+            resumeAR();
+        }
+        else if(action.equals("prepareVuforiaReadyEvent")) {
+            readyCallback = callback;
+        }else{
             return false;
         }
 
@@ -91,7 +106,7 @@ public class VuforiaPlugin extends CordovaPlugin {
     }
 
     // Start our Vuforia activities
-    public void startVuforia(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public void launchVuforiaCordova(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         // If we are starting Vuforia, set the public variable referencing our start callback for later use
         VuforiaPlugin.persistantVuforiaStartCallback = callbackContext;
 
@@ -101,11 +116,7 @@ public class VuforiaPlugin extends CordovaPlugin {
         // Get all of our ARGS out and into local variables
         String targetFile = args.getString(0);
         String targets = args.getJSONArray(1).toString();
-        String overlayText = (args.isNull(2)) ? null : args.getString(2);
         String vuforiaLicense = args.getString(3);
-        Boolean closeButton = args.getBoolean(4);
-        Boolean showDevicesIcon = args.getBoolean(5);
-        autostopOnImageFound = args.getBoolean(6);
 
         Context context =  cordova.getActivity().getApplicationContext();
 
@@ -114,14 +125,7 @@ public class VuforiaPlugin extends CordovaPlugin {
 
         intent.putExtra("IMAGE_TARGET_FILE", targetFile);
         intent.putExtra("IMAGE_TARGETS", targets);
-
-        if(overlayText != null)
-            intent.putExtra("OVERLAY_TEXT", overlayText);
-
         intent.putExtra("LICENSE_KEY", vuforiaLicense);
-        intent.putExtra("DISPLAY_CLOSE_BUTTON", closeButton);
-        intent.putExtra("DISPLAY_DEVICES_ICON", showDevicesIcon);
-        intent.putExtra("STOP_AFTER_IMAGE_FOUND", autostopOnImageFound);
 
         // Check to see if we have permission to access the camera
         if(cordova.hasPermission(CAMERA)) {
@@ -140,12 +144,10 @@ public class VuforiaPlugin extends CordovaPlugin {
         // JSON we will send back to Cordova
         JSONObject json = new JSONObject();
 
-        // Is Vuforia sterts?
+        // Is Vuforia sterted?
         if(vuforiaStarted) {
-            Log.d(LOGTAG, "Stopping plugin");
-
             // Stop Vuforia
-            sendAction(DISMISS_ACTION);
+            Vuforia.deinit();
             vuforiaStarted = false;
 
             json.put("success", "true");
@@ -166,7 +168,10 @@ public class VuforiaPlugin extends CordovaPlugin {
     public void stopVuforiaTrackers(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.d(LOGTAG, "Pausing trackers");
 
-        sendAction(PAUSE_ACTION);
+        Tracker objectTracker = TrackerManager.getInstance().getTracker(
+            ObjectTracker.getClassType());
+        if (objectTracker != null)
+            objectTracker.stop();
 
         sendSuccessPluginResult();
     }
@@ -175,7 +180,10 @@ public class VuforiaPlugin extends CordovaPlugin {
     public void startVuforiaTrackers(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.d(LOGTAG, "Resuming trackers");
 
-        sendAction(RESUME_ACTION);
+        Tracker objectTracker = TrackerManager.getInstance().getTracker(
+            ObjectTracker.getClassType());
+        if (objectTracker != null)
+            objectTracker.start();
 
         sendSuccessPluginResult();
     }
@@ -188,9 +196,25 @@ public class VuforiaPlugin extends CordovaPlugin {
 
         String targets = args.getJSONArray(0).toString();
 
-        sendAction(UPDATE_TARGETS_ACTION, targets);
-
         sendSuccessPluginResult();
+    }
+
+    /**
+     * Pauses the Vuforia AR and camera.
+     */
+    public void pauseAR(){
+        Log.d(LOGTAG, "Stopping camera");
+
+        getSession().pauseAR();
+    }
+
+    /**
+     * Resumes Vuforia AR and camera.
+     */
+    public void resumeAR(){
+        Log.d(LOGTAG, "Starting camera");
+
+        getSession().resumeAR();
     }
 
     // Handle the results of our permissions request
@@ -285,21 +309,6 @@ public class VuforiaPlugin extends CordovaPlugin {
         vuforiaStarted = false;
     }
 
-    // Send a broadcast to our open activity (probably Vuforia)
-    private void sendAction(String action){
-        Intent resumeIntent = new Intent(PLUGIN_ACTION);
-        resumeIntent.putExtra(PLUGIN_ACTION, action);
-        this.cordova.getActivity().sendBroadcast(resumeIntent);
-    }
-
-    // Send a broadcast to our open activity (probably Vuforia)
-    private void sendAction(String action, String data){
-        Intent resumeIntent = new Intent(PLUGIN_ACTION);
-        resumeIntent.putExtra(PLUGIN_ACTION, action);
-        resumeIntent.putExtra("ACTION_DATA", data);
-        this.cordova.getActivity().sendBroadcast(resumeIntent);
-    }
-
     // Send a generic 'success' result to the last callback given
     private void sendSuccessPluginResult(){
         try {
@@ -341,4 +350,20 @@ public class VuforiaPlugin extends CordovaPlugin {
         // Send the result to our PERSISTANT callback
         persistantVuforiaStartCallback.sendPluginResult(result);
     }
+
+    /**
+     * The vuforia sessions.
+     */
+    public static ApplicationSession getSession() {
+        return session;
+    }
+
+    /**
+     * Set the currect Vuforia sessions, so the plugin can mange Vuforia state.
+     * @param session
+     */
+    public static void setSession(ApplicationSession session) {
+        VuforiaPlugin.session = session;
+    }
+
 }

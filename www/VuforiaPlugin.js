@@ -1,14 +1,18 @@
+cordova.define("cordova-plugin-vuforia-background.VuforiaBackgroundPlugin", function(require, exports, module) {
+
+var vuforiaReadyEvent = new Event('vuforiaready');
+
 /**
- * VuforiaPlugin module, used within our Cordova front-end to both start and stop a Vuforia image recognition session.
+ * VuforiaBackgroundPlugin module, used within our Cordova front-end to both start and stop a Vuforia image recognition session.
  *
  * @type {object}
  */
-var VuforiaPlugin = {
+var VuforiaBackgroundPlugin = {
   /**
    * The plugin class to route messages to.
    * @type {string}
    */
-  pluginClass: 'VuforiaPlugin',
+  pluginClass: 'VuforiaBackgroundPlugin',
 
   /**
    * Start a new Vuforia image recognition session on the user's device.
@@ -43,7 +47,7 @@ var VuforiaPlugin = {
 
     exec_options = [ databaseXmlFile , targetList, overlayMessage, vuforiaLicense, showAndroidCloseButton, showDevicesIcon, autostopOnImageFound ];
 
-    VuforiaPlugin.exec(successCallback, errorCallback, 'cordovaStartVuforia', exec_options);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaStartVuforia', exec_options);
   },
 
   /**
@@ -53,7 +57,7 @@ var VuforiaPlugin = {
    * @param {function|null} errorCallback A callback for when an error occurs.
    */
   stopVuforia: function(successCallback, errorCallback){
-    VuforiaPlugin.exec(successCallback, errorCallback, 'cordovaStopVuforia', []);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaStopVuforia', []);
   },
 
   /**
@@ -63,7 +67,7 @@ var VuforiaPlugin = {
    * @param {function|null} errorCallback A callback for when an error occurs.
    */
   stopVuforiaTrackers: function(successCallback, errorCallback){
-    VuforiaPlugin.exec(successCallback, errorCallback, 'cordovaStopTrackers', []);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaStopTrackers', []);
   },
 
   /**
@@ -73,7 +77,7 @@ var VuforiaPlugin = {
    * @param {function|null} errorCallback A callback for when an error occurs.
    */
   startVuforiaTrackers: function(successCallback, errorCallback){
-    VuforiaPlugin.exec(successCallback, errorCallback, 'cordovaStartTrackers', []);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaStartTrackers', []);
   },
 
   /**
@@ -85,7 +89,15 @@ var VuforiaPlugin = {
    * @param {function|null} errorCallback A callback for when an error occurs.
    */
   updateVuforiaTargets: function(targets, successCallback, errorCallback){
-    VuforiaPlugin.exec(successCallback, errorCallback, 'cordovaUpdateTargets', [ targets ]);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaUpdateTargets', [ targets ]);
+  },
+  
+   stopCamera: function(successCallback, errorCallback){
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'stopCamera', [ ]);
+  },
+  
+   startCamera: function(successCallback, errorCallback){
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'startCamera', [ ]);
   },
 
   /**
@@ -118,10 +130,10 @@ var VuforiaPlugin = {
       success,
       // Register the error callback
       function errorCallback(err) {
-        VuforiaPlugin.errorHandler(err, error);
+        VuforiaBackgroundPlugin.errorHandler(err, error);
       },
       // Define what native class to route messages to
-      VuforiaPlugin.pluginClass,
+      VuforiaBackgroundPlugin.pluginClass,
       // Execute this method on the above native class
       method,
       // Provide an array of arguments to the above method
@@ -130,4 +142,11 @@ var VuforiaPlugin = {
   }
 };
 
-module.exports = VuforiaPlugin;
+
+VuforiaBackgroundPlugin.exec(function(){
+    document.dispatchEvent(vuforiaReadyEvent);
+}, function(){}, 'prepareVuforiaReadyEvent', []);
+
+module.exports = VuforiaBackgroundPlugin;
+
+});

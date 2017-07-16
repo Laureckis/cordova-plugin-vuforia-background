@@ -5,7 +5,7 @@ Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
 and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
 ===============================================================================*/
 
-package com.mattrayner.vuforia.app;
+package lv.aspired.vuforia.app;
 
 import java.util.Vector;
 
@@ -26,9 +26,9 @@ import com.vuforia.Trackable;
 import com.vuforia.TrackableResult;
 import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
 import com.vuforia.Vuforia;
-import com.mattrayner.vuforia.app.ApplicationSession;
-import com.mattrayner.vuforia.app.utils.LoadingDialogHandler;
-import com.mattrayner.vuforia.app.utils.Texture;
+import lv.aspired.vuforia.app.ApplicationSession;
+import lv.aspired.vuforia.app.utils.LoadingDialogHandler;
+import lv.aspired.vuforia.app.utils.Texture;
 
 
 // The renderer class for the ImageTargets sample.
