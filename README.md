@@ -36,13 +36,13 @@ The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Supported Platforms
-Android (Minimum 4), iOS (Minimum 8)
+Android (Minimum 4) (iOS coming soon)
 
 
 ## Requirements
-> **NOTE:** You will require an Android or iOS device for development and testing. Cordova-Plugin-Vuforia requires hardware and software support that is not present in either the iOS or Android simulators.
+> **NOTE:** You will require an Android or iOS device for development and testing. Cordova-Plugin-Vuforia-Background requires hardware and software support that is not present in either the iOS or Android simulators.
 
-Cordova-Plugin-Vuforia requires the following:
+Cordova-Plugin-Background-Vuforia requires the following:
 * [npm][npm]
 * [Cordova 6.*][cordova] - 6.* is required as of v2.1 of this plugin, it adds support for Android 6 (Marshmellow) and iOS 9.
   * If you haven't yet installed the Cordova CLI, grab the latest version by following [these steps][install-cordova].
@@ -57,16 +57,16 @@ At present there is one major dependency for Cordova-Plugin-Vuforia:
 ## Getting Started
 ### Plugin Installation
 ```bash
-cordova plugin add cordova-plugin-vuforia
+cordova plugin add https://github.com/Laureckis/cordova-plugin-vuforia-background
 ```
 
 
 ### JavaScript
-Cordova-Plugin-Vuforia comes with the following JavaScript methods:
+Cordova-Plugin-Vuforia-Background comes with the following JavaScript methods:
 
 Method | Description
 --- | ---
-[`startVuforia`][start-vuforia-doc-link] | **Begin a Vuforia session** - Launch the camera and begin searching for images to recognise.
+[`launchVuforia`][start-vuforia-doc-link] | **Launch a Vuforia activity with a Cordova WebView overlay** - Launch the camera and begin searching for images to recognise.
 [`stopVuforia`][stop-vuforia-doc-link] | **Stop a Vuforia session** - Close the camera and return back to Cordova.
 [`stopVuforiaTrackers`][stop-vuforia-trackers-doc-link] | **Stop the Vuforia tracking system** - Leave the Vuforia camera running, just stop searching for images.
 [`startVuforiaTrackers`][start-vuforia-trackers-doc-link] | **Start the Vuforia tracking system** - Leave the Vuforia camera running and start searching for images again.
