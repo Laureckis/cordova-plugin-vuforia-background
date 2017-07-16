@@ -113,7 +113,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         // Get all of our ARGS out and into local variables
         String targetFile = args.getString(0);
         String targets = args.getJSONArray(1).toString();
-        String vuforiaLicense = args.getString(3);
+        String vuforiaLicense = args.getString(2);
 
         Context context =  cordova.getActivity().getApplicationContext();
 

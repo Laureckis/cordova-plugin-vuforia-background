@@ -158,8 +158,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         Log.d(LOGTAG, "MRAY :: VUTORIA TARGETS: " + mTargets);
         mDatasetStrings.add(target_file);
 
-        vuforiaAppSession
-            .initAR(this, ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        vuforiaAppSession.initAR(this, ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
 
         mGestureDetector = new GestureDetector(this, new GestureListener());
 
@@ -523,8 +522,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
                 mContAutofocus = true;
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
-
-            VuforiaBackgroundPlugin.readyCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         } else
         {
             Log.e(LOGTAG, exception.getString());

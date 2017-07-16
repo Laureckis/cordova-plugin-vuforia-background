@@ -26,6 +26,10 @@ import com.vuforia.Trackable;
 import com.vuforia.TrackableResult;
 import com.vuforia.VIDEO_BACKGROUND_REFLECTION;
 import com.vuforia.Vuforia;
+
+import org.apache.cordova.PluginResult;
+
+import lv.aspired.vuforia.VuforiaBackgroundPlugin;
 import lv.aspired.vuforia.app.ApplicationSession;
 import lv.aspired.vuforia.app.utils.LoadingDialogHandler;
 import lv.aspired.vuforia.app.utils.Texture;
@@ -105,6 +109,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
         mActivity.loadingDialogHandler
             .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
 
+        VuforiaBackgroundPlugin.triggerVuforiaReady();
     }
 
 
