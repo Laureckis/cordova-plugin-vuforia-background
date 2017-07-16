@@ -60,7 +60,7 @@ import lv.aspired.vuforia.app.utils.LoadingDialogHandler;
 import lv.aspired.vuforia.app.utils.ApplicationGLView;
 import lv.aspired.vuforia.app.utils.Texture;
 
-import lv.aspired.vuforia.VuforiaPlugin;
+import lv.aspired.vuforia.VuforiaBackgroundPlugin;
 
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaWebView;
@@ -102,8 +102,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     private RelativeLayout mUILayout;
 
-    private ActionReceiver vuforiaActionReceiver;
-
     LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
     // Alert Dialog used to display SDK errors
@@ -116,27 +114,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     // Vuforia license key
     String mLicenseKey;
-
-    private class ActionReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context ctx, Intent intent) {
-            String receivedAction = intent.getExtras().getString(VuforiaPlugin.PLUGIN_ACTION);
-
-            if (receivedAction.equals(VuforiaPlugin.DISMISS_ACTION)) {
-                Vuforia.deinit();
-                finish();
-            }else if(receivedAction.equals(VuforiaPlugin.PAUSE_ACTION)){
-                doStopTrackers();
-            }else if(receivedAction.equals(VuforiaPlugin.RESUME_ACTION)){
-                doStartTrackers();
-            }else if(receivedAction.equals(VuforiaPlugin.UPDATE_TARGETS_ACTION)){
-                String targets = intent.getStringExtra("ACTION_DATA");
-                doUpdateTargets(targets);
-            }
-        }
-    }
-
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -163,11 +140,11 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
         try {
             vuforiaAppSession = new ApplicationSession(this, mLicenseKey);
-            VuforiaPlugin.setSession(vuforiaAppSession);
+            VuforiaBackgroundPlugin.setSession(vuforiaAppSession);
         } catch(Exception e) {
             Intent mIntent = new Intent();
             mIntent.putExtra("name", "VUFORIA ERROR");
-            setResult(VuforiaPlugin.ERROR_RESULT, mIntent);
+            setResult(VuforiaBackgroundPlugin.ERROR_RESULT, mIntent);
             finish();
         }
 
@@ -230,13 +207,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     @Override
     protected void onStart()
     {
-        if (vuforiaActionReceiver == null) {
-            vuforiaActionReceiver = new ActionReceiver();
-        }
-
-        IntentFilter intentFilter = new IntentFilter(VuforiaPlugin.PLUGIN_ACTION);
-        registerReceiver(vuforiaActionReceiver, intentFilter);
-
         Log.d(LOGTAG, "onStart");
         super.onStart();
     }
@@ -244,9 +214,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     @Override
     protected void onStop()
     {
-        if (vuforiaActionReceiver != null) {
-            unregisterReceiver(vuforiaActionReceiver);
-        }
         Log.d(LOGTAG, "onStop");
         super.onStop();
 
@@ -350,6 +317,8 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         mTextures.clear();
         mTextures = null;
 
+        Vuforia.deinit();
+
         System.gc();
     }
 
@@ -392,7 +361,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         loadingDialogHandler
             .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
-        SystemWebView wv = (SystemWebView) mUILayout.findViewById(R.id.cordovaWebView);
+        SystemWebView wv = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
         wv.setBackgroundColor(Color.TRANSPARENT);
         wv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
@@ -457,6 +426,32 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         }
 
         return true;
+    }
+
+    @Override
+    public boolean doStartTrackers() {
+        // Indicate if the trackers were started correctly
+        boolean result = true;
+
+        Tracker objectTracker = TrackerManager.getInstance().getTracker(
+                ObjectTracker.getClassType());
+        if (objectTracker != null)
+            objectTracker.start();
+
+        return result;
+    }
+
+    @Override
+    public boolean doStopTrackers() {
+        // Indicate if the trackers were stopped correctly
+        boolean result = true;
+
+        Tracker objectTracker = TrackerManager.getInstance().getTracker(
+                ObjectTracker.getClassType());
+        if (objectTracker != null)
+            objectTracker.stop();
+
+        return result;
     }
 
 
@@ -529,7 +524,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
 
-            VuforiaPlugin.readyCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+            VuforiaBackgroundPlugin.readyCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK));
         } else
         {
             Log.e(LOGTAG, exception.getString());
@@ -666,14 +661,14 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     public void onBackPressed() {
         Intent mIntent = new Intent();
         mIntent.putExtra("name", "CLOSED");
-        setResult(VuforiaPlugin.MANUAL_CLOSE_RESULT, mIntent);
+        setResult(VuforiaBackgroundPlugin.MANUAL_CLOSE_RESULT, mIntent);
         Vuforia.deinit();
         super.onBackPressed();
     }
 
     public void doFinish() {
         Intent mIntent = new Intent();
-        setResult(VuforiaPlugin.NO_RESULT, mIntent);
+        setResult(VuforiaBackgroundPlugin.NO_RESULT, mIntent);
         super.onBackPressed();
     }
 
@@ -689,7 +684,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         this.setResult(0, resultIntent);
 
         doStopTrackers();
-        VuforiaPlugin.sendImageFoundUpdate(imageName);
+        VuforiaBackgroundPlugin.sendImageFoundUpdate(imageName);
     }
 
     public void doUpdateTargets(String targets) {
@@ -701,7 +696,11 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     @Override
     protected CordovaWebView makeWebView() {
-        SystemWebView webView = (SystemWebView) findViewById(R.id.cordovaWebView);
+        // Get the project's package name and a reference to it's resources
+        String package_name = getApplication().getPackageName();
+        Resources resources = getApplication().getResources();
+
+        SystemWebView webView = (SystemWebView) findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
         return new CordovaWebViewImpl(new SystemWebViewEngine(webView));
     }
 

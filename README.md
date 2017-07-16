@@ -1,13 +1,9 @@
-# ![Cordova-Plugin-Vuforia][logo]
-Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition.
+# Cordova Vuforia Background Plugin
+Cordova-Plugin-Vuforia is a [Cordova][cordova] plugin that uses [Vuforia][vuforia] to perform image recognition. 
+The plugin puts the Vuforia camera view below the Cordova WebView. Settings your HTML
+elements transparent will allow you to use HTML UI on your Vuforia app.
 
-You can see a live example in the [Peugeot 208][peugeot] app on iOS and Android, and an open source example in the [cordova-vuforia-example][example-repo] repo.
-
-[![NPM Version][shield-npm]][info-npm]
-[![Supported Cordova Versions][shield-cordova]][info-npm]
-[![Build Status][shield-travis]][info-travis]
-[![Bithound Score][shield-bithound]][info-bithound]
-[![License][shield-license]][info-license]
+The plugin is based on the [Cordova-Plugin-Vuforia][cordova-plugin-vuforia] by [Matt Rayner][matt-rayner].
 
 
 ### Contents
@@ -324,17 +320,8 @@ Cordova-Plugin-Vuforia is licensed under the [MIT License][info-license].
 [cordova-plugin-vuforia-sdk]: https://github.com/mattrayner/cordova-plugin-vuforia-sdk
 [issue-16]: https://github.com/mattrayner/cordova-plugin-vuforia/issues/16
 [cordova-orientation-issue]: https://github.com/apache/cordova-lib/pull/260
-[peugeot]: https://itunes.apple.com/gb/app/new-peugeot-208/id1020630968?mt=8
-
-[info-npm]: https://www.npmjs.com/package/cordova-plugin-vuforia
-[info-travis]: https://travis-ci.org/mattrayner/cordova-plugin-vuforia
-[info-license]: LICENSE
-[info-bithound]: https://www.bithound.io/github/mattrayner/cordova-plugin-vuforia
-[shield-npm]: https://img.shields.io/npm/v/cordova-plugin-vuforia.svg
-[shield-travis]: https://img.shields.io/travis/mattrayner/cordova-plugin-vuforia.svg
-[shield-license]: https://img.shields.io/badge/license-MIT-blue.svg
-[shield-bithound]: https://www.bithound.io/github/mattrayner/cordova-plugin-vuforia/badges/score.svg
-[shield-cordova]: https://img.shields.io/badge/cordova%20support-6.*-blue.svg
+[cordova-plugin-vuforia]: https://github.com/mattrayner/cordova-plugin-vuforia
+[matt-rayner]: https://github.com/mattrayner
 
 [start-vuforia-doc-link]: #startvuforia---start-your-vuforia-session
 [stop-vuforia-doc-link]: #stopvuforia---stop-your-vuforia-session

@@ -32,22 +32,15 @@ var VuforiaBackgroundPlugin = {
    * @param {function|null} errorCallback A callback for when an error occurs. Could include device not having a camera,
    *                                      or invalid Vuforia key. Passes an error string with more information.
    */
-  startVuforia: function(options, successCallback, errorCallback){
+  launchVuforia: function(options, successCallback, errorCallback){
     var exec_options,
       databaseXmlFile = options.databaseXmlFile,
       targetList = options.targetList,
-      overlayMessage = options.overlayMessage,
-      vuforiaLicense = options.vuforiaLicense,
-      showAndroidCloseButton = !!options.showAndroidCloseButton,
-      showDevicesIcon = !!options.showDevicesIcon,
-      autostopOnImageFound = true;
+      vuforiaLicense = options.vuforiaLicense;
 
-    if (typeof options.autostopOnImageFound !== "undefined" && options.autostopOnImageFound !==null && !options.autostopOnImageFound)
-      autostopOnImageFound = false;
+    exec_options = [ databaseXmlFile , targetList,  vuforiaLicense];
 
-    exec_options = [ databaseXmlFile , targetList, overlayMessage, vuforiaLicense, showAndroidCloseButton, showDevicesIcon, autostopOnImageFound ];
-
-    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'cordovaStartVuforia', exec_options);
+    VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'launchVuforia', exec_options);
   },
 
   /**

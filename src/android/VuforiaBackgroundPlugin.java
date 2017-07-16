@@ -1,37 +1,34 @@
-package com.mattrayner.vuforia;
+package lv.aspired.vuforia;
 
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import android.app.Activity;
-import android.content.Intent;
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.Manifest;
-import android.Manifest.permission;
 
-import com.mattrayner.vuforia.app.ApplicationSession;
-import com.mattrayner.vuforia.app.ImageTargets;
-import com.vuforia.CameraDevice;
 import com.vuforia.ObjectTracker;
 import com.vuforia.Tracker;
 import com.vuforia.TrackerManager;
 import com.vuforia.Vuforia;
 
-public class VuforiaBakcgroundPlugin extends CordovaPlugin {
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import lv.aspired.vuforia.app.ApplicationException;
+import lv.aspired.vuforia.app.ApplicationSession;
+import lv.aspired.vuforia.app.ImageTargets;
+
+public class VuforiaBackgroundPlugin extends CordovaPlugin {
     static final String LOGTAG = "CordovaVuforiaBgPlugin";
 
     // Some public static variables used to communicate state
     public static final String CAMERA = Manifest.permission.CAMERA;
-    public static final String PLUGIN_ACTION = "org.cordova.plugin.vuforia.action";
 
     // Save some ENUM values to describe plugin results
     public static final int IMAGE_REC_RESULT = 0;
@@ -61,7 +58,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
      */
     private static ApplicationSession session;
 
-    public VuforiaBakcgroundPlugin() {
+    public VuforiaBackgroundPlugin() {
     }
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -75,7 +72,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
         callback = callbackContext;
 
         // Handle all expected actions
-        if(action.equals("launchVuforiaCordova")) {
+        if(action.equals("launchVuforia")) {
             launchVuforiaCordova(action, args, callbackContext);
         }
         else if(action.equals("cordovaStopVuforia")) {
@@ -108,7 +105,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
     // Start our Vuforia activities
     public void launchVuforiaCordova(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         // If we are starting Vuforia, set the public variable referencing our start callback for later use
-        VuforiaBakcgroundPlugin.persistantVuforiaStartCallback = callbackContext;
+        VuforiaBackgroundPlugin.persistantVuforiaStartCallback = callbackContext;
 
         ACTION = action;
         ARGS = args;
@@ -203,18 +200,30 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
      * Pauses the Vuforia AR and camera.
      */
     public void pauseAR(){
-        Log.d(LOGTAG, "Stopping camera");
+        Log.d(LOGTAG, "Pausing AR");
 
-        getSession().pauseAR();
+        try {
+            getSession().pauseAR();
+            sendSuccessPluginResult();
+        }catch(ApplicationException e){
+            Log.d(LOGTAG, "Error resuming AR: " + e);
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error resuming AR: " + e));
+        }
     }
 
     /**
      * Resumes Vuforia AR and camera.
      */
     public void resumeAR(){
-        Log.d(LOGTAG, "Starting camera");
+        Log.d(LOGTAG, "Resuming AR");
 
-        getSession().resumeAR();
+        try {
+            getSession().resumeAR();
+            sendSuccessPluginResult();
+        }catch(ApplicationException e){
+            Log.d(LOGTAG, "Error resuming AR: " + e);
+            callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error resuming AR: " + e));
+        }
     }
 
     // Handle the results of our permissions request
@@ -363,7 +372,7 @@ public class VuforiaBakcgroundPlugin extends CordovaPlugin {
      * @param session
      */
     public static void setSession(ApplicationSession session) {
-        VuforiaBakcgroundPlugin.session = session;
+        VuforiaBackgroundPlugin.session = session;
     }
 
 }
