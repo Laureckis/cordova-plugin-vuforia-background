@@ -60,51 +60,60 @@ At present there is one major dependency for Cordova-Plugin-Vuforia:
 cordova plugin add https://github.com/Laureckis/cordova-plugin-vuforia-background
 ```
 
-
 ### JavaScript
 Cordova-Plugin-Vuforia-Background comes with the following JavaScript methods:
 
 Method | Description
 --- | ---
-[`launchVuforia`][start-vuforia-doc-link] | **Launch a Vuforia activity with a Cordova WebView overlay** - Launch the camera and begin searching for images to recognise.
+[`launchVuforia`][start-vuforia-doc-link] | **Launch a Vuforia activity with a Cordova WebView overlay** - Launch the camera and begin searching for images to recognise. Used `vuforia_index.html` to overlay the camera view.
 [`stopVuforia`][stop-vuforia-doc-link] | **Stop a Vuforia session** - Close the camera and return back to Cordova.
 [`stopVuforiaTrackers`][stop-vuforia-trackers-doc-link] | **Stop the Vuforia tracking system** - Leave the Vuforia camera running, just stop searching for images.
 [`startVuforiaTrackers`][start-vuforia-trackers-doc-link] | **Start the Vuforia tracking system** - Leave the Vuforia camera running and start searching for images again.
 [`updateVuforiaTargets`][update-vuforia-targets-doc-link] | **Update Vuforia target list** - Update the list of images we are searching for, but leave the camera and Vuforia running.
 
 #### `startVuforia` - Start your Vuforia session
-From within your JavaScript file, add the following to launch the [Vuforia][vuforia] session.
+From within your JavaScript file, add the following to launch the [Vuforia][vuforia] session with Cordova WebView overlay.
 
 ```javascript
 var options = {
   databaseXmlFile: 'PluginTest.xml',
   targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
-  overlayMessage: 'Point your camera at a test image...',
   vuforiaLicense: 'YOUR_VUFORIA_KEY'
 };
 
-navigator.VuforiaPlugin.startVuforia(
+navigator.VuforiaBackgroundPlugin.startVuforia(
   options,
   function(data) {
     // To see exactly what `data` can return, see 'Success callback `data` API' within the plugin's documentation.
     console.log(data);
     
-    if(data.status.imageFound) {
-      alert("Image name: "+ data.result.imageName);
-    }
-    else if (data.status.manuallyClosed) {
+    if (data.status.manuallyClosed) {
       alert("User manually closed Vuforia by pressing back!");
+      // if you start Vuforia on app launch, this is where you should exit the app
     }
   },
   function(data) {
     alert("Error: " + data);
   }
 );
+
+document.addEventListener('vuforiaready', function(){
+    // code to execute when vuforia is loaded
+}, false);
+
+document.addEventListener('vuforiamarker', function(event){
+    // code to execute when a marker is detected
+    console.log('Marker detected: ', event.detail.result.name, event.detail);
+
+    // tracking will be paused now, call navigator.VuforiaBackgroundPlugin.startVuforiaTrackers() to resume when needed, else this event will be triggered each frame the marker is in view
+}, false);
+
 ```
 
 > **NOTES:**
 > * You will need to replace `YOUR_VUFORIA_KEY` with a valid license key for the plugin to launch correctly.
 > * For testing you can use the `targets/PluginTest_Targets.pdf` file inside the plugin folder; it contains all four testing targets.
+> * The "vuforiamarker" event triggers when a marker is detected. Once it triggers, detection stops. You need to enabled it again by calling `navigator.VuforiaBackgroundPlugin.startVuforiaTrackers()` to receive more events.
 
 ##### `options` object
 The options object has a number of properties, some of which are required, and some which are not. Below if a full reference and some example options objects
@@ -114,10 +123,6 @@ Option | Required | Default Value | Description
 `databaseXmlFile` | `true` | `null` | The Vuforia database file (.xml) with our target data inside.
 `targetList` | `true` | `null` | An array of images we are going to search for within our database. For example you may have a database of 100 images, but only be interested in 5 right now.
 `vuforiaLicense` | `true` | `null` | Your application's Vuforia license key.
-`overlayMessage` | `false` | `null` | A piece of copy displayed as a helpful hint to users i.e. 'Point your camera at the orange target'. *Providing no message will hide the overlay entirely*
-`showDevicesIcon` | `false` | `false` | Display a device icon within the overlay. This can be a helpful hint for users i.e. 'Scan any page with the device icon on it.' *By default, this is false (the icon is hidden)*
-`showAndroidCloseButton` | `false` | `false` | Show a close icon on-screen on Android devices. This is helpful if your Android device's back button is hidden/disabled. *By default, this is false (no close button is shown on Android)*
-`autostopOnImageFound` | `false` | `true` | Should Vuforia automatically return to Cordova when an image is found? This is helpful if you want to scan for multiple images without re-launching the plugin. *By default, this is true (when an image is found, Vuforia returns to Cordova)*
 
 ###### Examples
 **Minumum required**
@@ -129,38 +134,8 @@ var options = {
 };
 ```
 
-**Complete options**
-```javascript
-var options = {
-  databaseXmlFile: 'PluginTest.xml',
-  targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
-  vuforiaLicense: 'YOUR_VUFORIA_KEY',
-  overlayMessage: 'Point your camera at a test image...',
-  showDevicesIcon: true,
-  showAndroidCloseButton: true,
-  autostopOnImageFound: false
-};
-```
-
-
 ##### Success callback `data` API
 `startVuforia` takes two callbacks - one for `success` and one for `faliure`. When `success` is called, a `data` object is passed to Cordova. This will be in one of the following formats:
-
-**Image Found** - when an image has been successfully found, `data` returns:
-
-```json
-{
-  "status": {
-    "imageFound": true,
-    "message": "Image found."
-  },
-  "result": {
-    "imageName": "IMAGE_NAME"
-  }
-}
-```
-
-> **NOTE:** `imageName` will return the name of the image found by Vuforia. For example, with the above options objects, `brick-lane` would be sent when the brick-lane image was found.
 
 **Manually Closed** - when a user has exited Vuforia via pressing the close/back button, `data` returns: 
 
@@ -267,7 +242,7 @@ First, create a `targets/` folder inside `www/` and place your own `.xml` and `.
 > **NOTE:** Adding a `.pdf` file isn't required, but might be helpful for testing and development purposes.
 
 #### JavaScript
-##### `startVuforia(...)`
+##### `launchVuforia(...)`
 There are two pieces you will need to replace:
 
 1. `PluginTest.xml` - Replace with a reference to your custom data file e.g. `www/targets/CustomData.xml`

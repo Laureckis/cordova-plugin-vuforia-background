@@ -146,4 +146,12 @@ VuforiaBackgroundPlugin.exec(function () {
     document.dispatchEvent(vuforiaReadyEvent);
 }, function () {}, 'prepareVuforiaReadyEvent', []);
 
+// prepare marker detected events
+VuforiaBackgroundPlugin.exec(function (data) {
+    var detected = new CustomEvent('vuforiamarker', {detail: result});
+    
+    // called when Vuforia finishes loading
+    document.dispatchEvent(detected);
+}, function () {}, 'prepareVuforiaMarkerEvent', []);
+
 module.exports = VuforiaBackgroundPlugin;

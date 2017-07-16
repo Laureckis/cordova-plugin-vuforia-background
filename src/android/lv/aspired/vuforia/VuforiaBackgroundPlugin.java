@@ -51,7 +51,16 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     // Internal variables for holding state
     private boolean vuforiaStarted = false;
     CallbackContext callback;
+
+    /**
+     * Callback context for the Vuforia ready event.
+     */
     public static CallbackContext readyCallback;
+
+    /**
+     * Callback context for the Vuforia marker event.
+     */
+    public static CallbackContext markerCallback;
 
     /**
      * The vuforia sessions.
@@ -72,30 +81,25 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         callback = callbackContext;
 
         // Handle all expected actions
-        if(action.equals("launchVuforia")) {
+        if (action.equals("launchVuforia")) {
             launchVuforiaCordova(action, args, callbackContext);
-        }
-        else if(action.equals("cordovaStopVuforia")) {
+        } else if (action.equals("cordovaStopVuforia")) {
             stopVuforia(action, args, callbackContext);
-        }
-        else if(action.equals("cordovaStopTrackers")) {
+        } else if (action.equals("cordovaStopTrackers")) {
             stopVuforiaTrackers(action, args, callbackContext);
-        }
-        else if(action.equals("cordovaStartTrackers")) {
+        } else if (action.equals("cordovaStartTrackers")) {
             startVuforiaTrackers(action, args, callbackContext);
-        }
-        else if(action.equals("cordovaUpdateTargets")) {
+        } else if (action.equals("cordovaUpdateTargets")) {
             updateVuforiaTargets(action, args, callbackContext);
-        }
-        else if(action.equals("pauseAR")) {
+        } else if (action.equals("pauseAR")) {
             pauseAR();
-        }
-        else if(action.equals("resumeAr")) {
+        } else if (action.equals("resumeAr")) {
             resumeAR();
-        }
-        else if(action.equals("prepareVuforiaReadyEvent")) {
+        } else if (action.equals("prepareVuforiaReadyEvent")) {
             readyCallback = callback;
-        }else{
+        } else if (action.equals("prepareVuforiaMarkerEvent")) {
+            markerCallback = callback;
+        } else {
             return false;
         }
 
@@ -115,7 +119,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         String targets = args.getJSONArray(1).toString();
         String vuforiaLicense = args.getString(2);
 
-        Context context =  cordova.getActivity().getApplicationContext();
+        Context context = cordova.getActivity().getApplicationContext();
 
         // Create a new intent to pass data to Vuforia
         Intent intent = new Intent(context, ImageTargets.class);
@@ -125,12 +129,11 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         intent.putExtra("LICENSE_KEY", vuforiaLicense);
 
         // Check to see if we have permission to access the camera
-        if(cordova.hasPermission(CAMERA)) {
+        if (cordova.hasPermission(CAMERA)) {
             // Launch a new activity with Vuforia in it. Expect it to return a result.
             cordova.startActivityForResult(this, intent, IMAGE_REC_REQUEST);
             vuforiaStarted = true;
-        }
-        else {
+        } else {
             // Request the camera permission and handle the outcome.
             cordova.requestPermission(this, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE, CAMERA);
         }
@@ -142,14 +145,13 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         JSONObject json = new JSONObject();
 
         // Is Vuforia sterted?
-        if(vuforiaStarted) {
+        if (vuforiaStarted) {
             // Stop Vuforia
             Vuforia.deinit();
             vuforiaStarted = false;
 
             json.put("success", "true");
-        }
-        else {
+        } else {
             Log.d(LOGTAG, "Cannot stop the plugin because it wasn't started");
 
             json.put("success", "false");
@@ -166,7 +168,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         Log.d(LOGTAG, "Pausing trackers");
 
         Tracker objectTracker = TrackerManager.getInstance().getTracker(
-            ObjectTracker.getClassType());
+                ObjectTracker.getClassType());
         if (objectTracker != null)
             objectTracker.stop();
 
@@ -178,7 +180,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         Log.d(LOGTAG, "Resuming trackers");
 
         Tracker objectTracker = TrackerManager.getInstance().getTracker(
-            ObjectTracker.getClassType());
+                ObjectTracker.getClassType());
         if (objectTracker != null)
             objectTracker.start();
 
@@ -189,7 +191,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     public void updateVuforiaTargets(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         Log.d(LOGTAG, "Updating targets");
 
-        Log.d(LOGTAG, "ARGS: "+args);
+        Log.d(LOGTAG, "ARGS: " + args);
 
         String targets = args.getJSONArray(0).toString();
 
@@ -199,13 +201,13 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     /**
      * Pauses the Vuforia AR and camera.
      */
-    public void pauseAR(){
+    public void pauseAR() {
         Log.d(LOGTAG, "Pausing AR");
 
         try {
             getSession().pauseAR();
             sendSuccessPluginResult();
-        }catch(ApplicationException e){
+        } catch (ApplicationException e) {
             Log.d(LOGTAG, "Error resuming AR: " + e);
             callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error resuming AR: " + e));
         }
@@ -214,13 +216,13 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     /**
      * Resumes Vuforia AR and camera.
      */
-    public void resumeAR(){
+    public void resumeAR() {
         Log.d(LOGTAG, "Resuming AR");
 
         try {
             getSession().resumeAR();
             sendSuccessPluginResult();
-        }catch(ApplicationException e){
+        } catch (ApplicationException e) {
             Log.d(LOGTAG, "Error resuming AR: " + e);
             callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "Error resuming AR: " + e));
         }
@@ -228,16 +230,16 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
 
     // Handle the results of our permissions request
     public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
-        for(int r:grantResults) {
+        for (int r : grantResults) {
             // Is the permission denied for our video request?
-            if(r == PackageManager.PERMISSION_DENIED && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+            if (r == PackageManager.PERMISSION_DENIED && requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
                 // Send a plugin error
                 this.callback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "CAMERA_PERMISSION_ERROR"));
                 return;
             }
         }
 
-        if(requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
+        if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
             execute(ACTION, ARGS, this.callback); // Re-call execute with all the same values as before (will re-check for permissions)
     }
 
@@ -249,8 +251,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         // If we get to this point with no data  then we've likely got an error. Or the activity closed because of an error.
         if (data == null) {
             name = "ERROR";
-        }
-        else {
+        } else {
             name = data.getStringExtra("name");
         }
 
@@ -261,36 +262,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
             JSONObject jsonObj = new JSONObject();
 
             // Check what result code we received
-            switch(resultCode){
-                case IMAGE_REC_RESULT: // We've received an image (hopefully)
-                    // Attempt to build and send a result back to Cordova.
-                    try {
-                        // Create our status object
-                        JSONObject jsonStatus = new JSONObject();
-                        jsonStatus.put("imageFound", true);
-                        jsonStatus.put("message", "An image was found.");
-
-                        // Create our result object
-                        JSONObject jsonResult = new JSONObject();
-                        jsonResult.put("imageName", name);
-
-                        // Create our response object
-                        jsonObj.put("status", jsonStatus);
-                        jsonObj.put("result", jsonResult);
-
-                        // Create the plugin result
-                        PluginResult result = new PluginResult(PluginResult.Status.OK, jsonObj);
-
-                        // Send a result specifically to our PERSISTANT callback i.e. the callback given to startVuforia.
-                        // This allows us to receive other messages from start/stop tracker events without losing this particular callback.
-                        persistantVuforiaStartCallback.sendPluginResult(result);
-                    }
-                    catch(JSONException e) { // We encounter a JSONException
-                        Log.d(LOGTAG, "JSON ERROR: " + e);
-                        // Send an error to the plugin (so we don't just die quietly)
-                        persistantVuforiaStartCallback.sendPluginResult( new PluginResult(PluginResult.Status.ERROR, "JSON ERROR BUILDING IMAGE FOUND RESPONSE: " + e) );
-                    }
-                    break;
+            switch (resultCode) {
                 case MANUAL_CLOSE_RESULT: // The user has manually closed the plugin.
                     try {
                         // Create our status object
@@ -302,11 +274,10 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
 
                         // Send the result back to the persistant callback
                         persistantVuforiaStartCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK, jsonObj));
-                    }
-                    catch( JSONException e ) {
+                    } catch (JSONException e) {
                         Log.d(LOGTAG, "JSON ERROR: " + e);
                         // Send an error to the plugin (so we don't just die quietly)
-                        persistantVuforiaStartCallback.sendPluginResult( new PluginResult(PluginResult.Status.ERROR, "JSON ERROR BUILDING MANUAL CLOSE RESPONSE: " + e) );
+                        persistantVuforiaStartCallback.sendPluginResult(new PluginResult(PluginResult.Status.ERROR, "JSON ERROR BUILDING MANUAL CLOSE RESPONSE: " + e));
                     }
                     break;
                 default:
@@ -319,19 +290,18 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     }
 
     // Send a generic 'success' result to the last callback given
-    private void sendSuccessPluginResult(){
+    private void sendSuccessPluginResult() {
         try {
             JSONObject json = new JSONObject();
             json.put("success", "true");
             callback.sendPluginResult(new PluginResult(PluginResult.Status.OK, json));
-        }
-        catch( JSONException e ) {
+        } catch (JSONException e) {
             Log.d(LOGTAG, "JSON ERROR: " + e);
         }
     }
 
     // Send an asynchronous update when an image is found and Vuforia is set to stay open.
-    public static void sendImageFoundUpdate(String imageName){
+    public static void sendImageFoundUpdate(String imageName) {
         Log.d(LOGTAG, "Attempting to send an update for image: " + imageName);
 
         // Create an object to hold our response
@@ -344,7 +314,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
             jsonStatus.put("message", "An image was found.");
 
             JSONObject jsonResult = new JSONObject();
-            jsonResult.put("imageName", imageName);
+            jsonResult.put("name", imageName);
 
             jsonObj.put("status", jsonStatus);
             jsonObj.put("result", jsonResult);
@@ -357,7 +327,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         result.setKeepCallback(true); // Don't clean up our callback (we intend on sending more messages to it)
 
         // Send the result to our PERSISTANT callback
-        persistantVuforiaStartCallback.sendPluginResult(result);
+        markerCallback.sendPluginResult(result);
     }
 
     /**
@@ -369,17 +339,18 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
 
     /**
      * Set the currect Vuforia sessions, so the plugin can mange Vuforia state.
+     *
      * @param session
      */
     public static void setSession(ApplicationSession session) {
         VuforiaBackgroundPlugin.session = session;
     }
-    
+
     /**
      * Triggers the Vuforia ready event.
      */
-    public static void triggerVuforiaReady(){
-        readyCallback.sendPluginResult(PluginResult.Status.OK);
+    public static void triggerVuforiaReady() {
+        readyCallback.sendPluginResult(new PluginResult(PluginResult.Status.OK));
     }
 
 }
