@@ -30,7 +30,7 @@
     <platform name="android">
         <!-- Plugin Config -->
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="VuforiaBackgroundPlugin" >
+            <feature name="lv.aspired.vuforia.VuforiaBackgroundPlugin" >
                 <param name="android-package" value="lv.aspired.vuforia.VuforiaBackgroundPlugin"/>
             </feature>
         </config-file>

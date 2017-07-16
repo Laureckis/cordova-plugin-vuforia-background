@@ -374,5 +374,12 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
     public static void setSession(ApplicationSession session) {
         VuforiaBackgroundPlugin.session = session;
     }
+    
+    /**
+     * Triggers the Vuforia ready event.
+     */
+    public static void triggerVuforiaReady(){
+        readyCallback.sendPluginResult(PluginResult.Status.OK);
+    }
 
 }

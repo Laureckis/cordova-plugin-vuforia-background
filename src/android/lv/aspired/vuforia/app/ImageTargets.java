@@ -316,8 +316,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         mTextures.clear();
         mTextures = null;
 
-        Vuforia.deinit();
-
         System.gc();
     }
 
