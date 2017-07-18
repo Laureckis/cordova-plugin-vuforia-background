@@ -225,13 +225,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         Log.d(LOGTAG, "onResume");
         super.onResume();
 
-        // This is needed for some Droid devices to force landscape
-        if (mIsDroidDevice)
-        {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
-
         try
         {
             vuforiaAppSession.resumeAR();
