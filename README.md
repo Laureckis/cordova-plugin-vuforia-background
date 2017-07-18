@@ -162,7 +162,7 @@ From within your JavaScript file, add the following to stop the [Vuforia][vufori
 **Why?** - Well, you could pair this with a setTimeout to give users a certain amount of time to search for an image.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.stopVuforia(
+navigator.VuforiaBackgroundPlugin.stopVuforia(
   function (data) {
     console.log(data);
 
@@ -189,7 +189,7 @@ From within your JavaScript file, add the following to stop the [Vuforia][vufori
 **Why?** - Well, you may want to play a sound after an image rec, or have some kind of delay between recognitions.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.stopVuforiaTrackers(
+navigator.VuforiaBackgroundPlugin.stopVuforiaTrackers(
   function (data) {
     console.log(data);
     
@@ -208,7 +208,7 @@ From within your JavaScript file, add the following to start the [Vuforia][vufor
 **Why?** - Well, you may want to play a sound after an image rec, or have some kind of delay between recognitions.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.startVuforiaTrackers(
+navigator.VuforiaBackgroundPlugin.startVuforiaTrackers(
   function (data) {
     console.log(data);
     
@@ -227,7 +227,7 @@ From within your JavaScript file, add the following to update the list of images
 **Why?** - Well, you may want to change the images you are searching for after launching Vuforia. For example, consider a scenario where a game requires users to scan images one after another in a certain order. For example, a museum app may want you to scan all of the Rembrandt paintings in a room from oldest to newest to unlock some content. This method can offload the burdon of decision from your app to Vuforia, instead of writing login in your JavaScript, we're letting Vuforia take care of it.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.updateVuforiaTargets(
+navigator.VuforiaBackgroundPlugin.updateVuforiaTargets(
     ['iceland', 'canterbury-grass'], // Only return a success if the 'iceland' or 'canterbury-grass' images are found.
     function(data){
         console.log(data);
@@ -245,7 +245,7 @@ navigator.VuforiaBakcgroundPlugin.updateVuforiaTargets(
 **Why?** - You may want to not use the camera for all sections of your app.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.pauseAR(
+navigator.VuforiaBackgroundPlugin.pauseAR(
     function(data){
         console.log(data);
         
@@ -262,7 +262,7 @@ navigator.VuforiaBakcgroundPlugin.pauseAR(
 **Why?** - You may want to not use the camera for all sections of your app.
 
 ```javascript
-navigator.VuforiaBakcgroundPlugin.pauseAR(
+navigator.VuforiaBackgroundPlugin.resumeAR(
     function(data){
         console.log(data);
         
