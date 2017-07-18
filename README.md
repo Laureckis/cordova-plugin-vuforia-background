@@ -341,6 +341,8 @@ Cordova-Plugin-Vuforia-Background is licensed under the [MIT License][info-licen
 [matt-rayner]: https://github.com/mattrayner
 [example-repo-linl]: github.com:Laureckis/cordova-plugin-vuforia-background-example
 
+[info-license]: LICENSE
+
 [start-vuforia-doc-link]: #startvuforia---start-your-vuforia-session
 [stop-vuforia-doc-link]: #stopvuforia---stop-your-vuforia-session
 [stop-vuforia-trackers-doc-link]: #stopvuforiatrackers---stop-vuforia-image-trackers
