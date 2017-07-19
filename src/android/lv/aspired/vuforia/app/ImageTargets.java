@@ -129,11 +129,19 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        //Force Landscape
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
         //Grab a reference to our Intent so that we can get the extra data passed into it
         Intent intent = getIntent();
+
+        // check orientation
+        String orientation = intent.getStringExtra("ORIENTATION");
+        int ori = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+        if("portrait".equals(orientation)){
+            ori = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        }else if("landscape".equals(orientation)){
+            ori = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        }
+        this.setRequestedOrientation(ori);
+
 
         //Get the vuoria license key that was passed into the plugin
         mLicenseKey = intent.getStringExtra("LICENSE_KEY");
@@ -158,7 +166,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         Log.d(LOGTAG, "MRAY :: VUTORIA TARGETS: " + mTargets);
         mDatasetStrings.add(target_file);
 
-        vuforiaAppSession.initAR(this, ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        vuforiaAppSession.initAR(this, ori);
 
         mGestureDetector = new GestureDetector(this, new GestureListener());
 
@@ -224,6 +232,13 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     {
         Log.d(LOGTAG, "onResume");
         super.onResume();
+
+        // This is needed for some Droid devices to force landscape
+        if (mIsDroidDevice)
+        {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
 
         try
         {

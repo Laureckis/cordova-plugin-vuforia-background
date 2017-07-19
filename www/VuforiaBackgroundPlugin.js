@@ -28,9 +28,10 @@ var VuforiaBackgroundPlugin = {
         var exec_options,
                 databaseXmlFile = options.databaseXmlFile,
                 targetList = options.targetList,
-                vuforiaLicense = options.vuforiaLicense;
+                vuforiaLicense = options.vuforiaLicense,
+                orientation = options.hasOwnProperty('orientation') ? options.orientation : 'any';
 
-        exec_options = [databaseXmlFile, targetList, vuforiaLicense];
+        exec_options = [databaseXmlFile, targetList, vuforiaLicense, orientation];
 
         VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'launchVuforia', exec_options);
     },
