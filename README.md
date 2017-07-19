@@ -131,6 +131,7 @@ Option | Required | Default Value | Description
 `databaseXmlFile` | `true` | `null` | The Vuforia database file (.xml) with our target data inside.
 `targetList` | `true` | `null` | An array of images we are going to search for within our database. For example you may have a database of 100 images, but only be interested in 5 right now.
 `vuforiaLicense` | `true` | `null` | Your application's Vuforia license key.
+`orientation` | `false` | `any` | Force a specific orientation for the Vuforia view. Accepts `any`, `portrait` and `landscape`.
 
 ###### Examples
 **Minumum required**
@@ -139,6 +140,16 @@ var options = {
   databaseXmlFile: 'PluginTest.xml',
   targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
   vuforiaLicense: 'YOUR_VUFORIA_KEY'
+};
+```
+
+**All options**
+```javascript
+var options = {
+  databaseXmlFile: 'PluginTest.xml',
+  targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
+  vuforiaLicense: 'YOUR_VUFORIA_KEY',
+  orientation: 'portrait'
 };
 ```
 
