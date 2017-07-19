@@ -132,6 +132,7 @@ Option | Required | Default Value | Description
 `targetList` | `true` | `null` | An array of images we are going to search for within our database. For example you may have a database of 100 images, but only be interested in 5 right now.
 `vuforiaLicense` | `true` | `null` | Your application's Vuforia license key.
 `orientation` | `false` | `any` | Force a specific orientation for the Vuforia view. Accepts `any`, `portrait` and `landscape`.
+`fullscreen` | `false` | `false` | Whether to try to force the Vuforia view into fullscreen.
 
 ###### Examples
 **Minumum required**
@@ -149,7 +150,8 @@ var options = {
   databaseXmlFile: 'PluginTest.xml',
   targetList: [ 'logo', 'iceland', 'canterbury-grass', 'brick-lane' ],
   vuforiaLicense: 'YOUR_VUFORIA_KEY',
-  orientation: 'portrait'
+  orientation: 'portrait',
+  fullscreen: true
 };
 ```
 

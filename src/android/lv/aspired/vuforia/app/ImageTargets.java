@@ -123,14 +123,16 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-        //Remove title bar
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        //Remove notification bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         //Grab a reference to our Intent so that we can get the extra data passed into it
         Intent intent = getIntent();
+
+        if(intent.getBooleanExtra("FULLSCREEN", false)) {
+            //Remove title bar
+            this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            //Remove notification bar
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         // check orientation
         String orientation = intent.getStringExtra("ORIENTATION");

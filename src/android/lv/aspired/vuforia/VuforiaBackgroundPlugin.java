@@ -119,6 +119,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         String targets = args.getJSONArray(1).toString();
         String vuforiaLicense = args.getString(2);
         String orientation = args.length() >= 3 ? args.getString(3) : "any";
+        boolean fullscreen = args.length() > 3 ? args.getBoolean(4) : false;
 
         Context context = cordova.getActivity().getApplicationContext();
 
@@ -129,6 +130,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
         intent.putExtra("IMAGE_TARGETS", targets);
         intent.putExtra("LICENSE_KEY", vuforiaLicense);
         intent.putExtra("ORIENTATION", orientation);
+        intent.putExtra("FULLSCREEN", fullscreen);
 
         // Check to see if we have permission to access the camera
         if (cordova.hasPermission(CAMERA)) {

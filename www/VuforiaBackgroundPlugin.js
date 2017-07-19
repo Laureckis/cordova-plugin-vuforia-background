@@ -19,6 +19,8 @@ var VuforiaBackgroundPlugin = {
      * @param {Array.<string>} options.targetList An array of images we are going to search for within our database. For example
      *                                      you may have a database of 100 images, but only be interested in 5 right now.
      * @param {string} options.vuforiaLicense Your Vuforia license key. This is required for Vuforia to initialise successfully.
+     * @param {string} options.orientation any|portrait|landscape force app to be in specific orientation.
+     * @param {boolean} options.fullscreen whether the app should be fullscreen
      * @param {function} successCallback A callback for when an image is found. Passes a data object with the image
      *                                      name inside.
      * @param {function|null} errorCallback A callback for when an error occurs. Could include device not having a camera,
@@ -29,9 +31,10 @@ var VuforiaBackgroundPlugin = {
                 databaseXmlFile = options.databaseXmlFile,
                 targetList = options.targetList,
                 vuforiaLicense = options.vuforiaLicense,
-                orientation = options.hasOwnProperty('orientation') ? options.orientation : 'any';
+                orientation = options.hasOwnProperty('orientation') ? options.orientation : 'any',
+                fullscreen = options.hasOwnProperty('fullscreen') ? options.fullscreen : false;
 
-        exec_options = [databaseXmlFile, targetList, vuforiaLicense, orientation];
+        exec_options = [databaseXmlFile, targetList, vuforiaLicense, orientation, fullscreen];
 
         VuforiaBackgroundPlugin.exec(successCallback, errorCallback, 'launchVuforia', exec_options);
     },
