@@ -93,7 +93,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
             updateVuforiaTargets(action, args, callbackContext);
         } else if (action.equals("pauseAR")) {
             pauseAR();
-        } else if (action.equals("resumeAr")) {
+        } else if (action.equals("resumeAR")) {
             resumeAR();
         } else if (action.equals("prepareVuforiaReadyEvent")) {
             readyCallback = callback;
