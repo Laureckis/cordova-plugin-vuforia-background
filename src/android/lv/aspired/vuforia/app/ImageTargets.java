@@ -109,6 +109,11 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     boolean mIsDroidDevice = false;
 
+    /**
+     * Receives data from VuforiaPlugin.
+     */
+    private ActionReceiver vuforiaActionReceiver;
+
     // Array of target names
     String mTargets;
 
@@ -222,10 +227,29 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         }
     }
 
+    private class ActionReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+            String receivedAction = intent.getExtras().getString(VuforiaBackgroundPlugin.PLUGIN_ACTION);
+            if(receivedAction.equals(VuforiaBackgroundPlugin.UPDATE_TARGETS_ACTION)){
+                String targets = intent.getStringExtra("ACTION_DATA");
+                doUpdateTargets(targets);
+            }
+        }
+    }
+
 
     @Override
     protected void onStart()
     {
+        if (vuforiaActionReceiver == null) {
+            vuforiaActionReceiver = new ActionReceiver();
+        }
+
+        IntentFilter intentFilter = new IntentFilter(VuforiaBackgroundPlugin.PLUGIN_ACTION);
+        registerReceiver(vuforiaActionReceiver, intentFilter);
+
         Log.d(LOGTAG, "onStart");
         super.onStart();
     }
@@ -233,6 +257,10 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     @Override
     protected void onStop()
     {
+        if (vuforiaActionReceiver != null) {
+            unregisterReceiver(vuforiaActionReceiver);
+        }
+
         Log.d(LOGTAG, "onStop");
         super.onStop();
 

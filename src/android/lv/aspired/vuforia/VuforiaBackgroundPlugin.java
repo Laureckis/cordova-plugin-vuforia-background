@@ -29,6 +29,8 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
 
     // Some public static variables used to communicate state
     public static final String CAMERA = Manifest.permission.CAMERA;
+    public static final String PLUGIN_ACTION = "org.cordova.plugin.vuforiabg.action";
+    public static final String UPDATE_TARGETS_ACTION = "update_targets";
 
     // Save some ENUM values to describe plugin results
     public static final int IMAGE_REC_RESULT = 0;
@@ -199,7 +201,16 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
 
         String targets = args.getJSONArray(0).toString();
 
+        sendAction(UPDATE_TARGETS_ACTION, targets);
         sendSuccessPluginResult();
+    }
+
+    // Send a broadcast to our open activity (probably Vuforia)
+    private void sendAction(String action, String data){
+        Intent resumeIntent = new Intent(PLUGIN_ACTION);
+        resumeIntent.putExtra(PLUGIN_ACTION, action);
+        resumeIntent.putExtra("ACTION_DATA", data);
+        this.cordova.getActivity().sendBroadcast(resumeIntent);
     }
 
     /**
