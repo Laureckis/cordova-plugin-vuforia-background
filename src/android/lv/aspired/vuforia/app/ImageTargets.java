@@ -82,8 +82,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     private DataSet mCurrentDataset;
     private int mCurrentDatasetSelectionIndex = 0;
-    private int mStartDatasetsIndex = 0;
-    private int mDatasetsNumber = 0;
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
 
     // Our OpenGL view:
@@ -102,8 +100,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     private boolean mContAutofocus = false;
     private boolean mExtendedTracking = false;
 
-    private View mFlashOptionView;
-
     private RelativeLayout mUILayout;
 
     LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
@@ -120,9 +116,14 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     String mLicenseKey;
 
     /**
+     * Keeps track whether Vuforia is beeing initalized or not.
+     */
+    boolean initializing = false;
+
+    /**
      * The cordvoa webview.
      */
-    private SystemWebView cwv;
+    private CordovaWebView cwv;
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -192,7 +193,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     // Process Single Tap event to trigger autofocus
     public class GestureListener extends
-        GestureDetector.SimpleOnGestureListener {
+            GestureDetector.SimpleOnGestureListener {
         // Used to set autofocus one second after a manual focus is triggered
         private final Handler autofocusHandler = new Handler();
 
@@ -293,19 +294,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             mGlView.onPause();
         }
 
-        // Turn off the flash
-        if (mFlashOptionView != null && mFlash)
-        {
-            // OnCheckedChangeListener is called upon changing the checked state
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
-            {
-                ((Switch) mFlashOptionView).setChecked(false);
-            } else
-            {
-                ((CheckBox) mFlashOptionView).setChecked(false);
-            }
-        }
-
         try
         {
             vuforiaAppSession.pauseAR();
@@ -322,7 +310,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     {
         Log.d(LOGTAG, "onDestroy");
 
-        ((ViewGroup) cwv.getParent()).removeView(cwv);
+        if(cwv != null) {
+            ((ViewGroup) cwv.getView().getParent()).removeView(cwv.getView());
+        }
 
         super.onDestroy();
 
@@ -360,6 +350,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
     private void startLoadingAnimation()
     {
+        initializing = true;
         // Get the project's package name and a reference to it's resources
         String package_name = getApplication().getPackageName();
         Resources resources = getApplication().getResources();
@@ -367,22 +358,20 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         LayoutInflater inflater = LayoutInflater.from(this);
 
         mUILayout = (RelativeLayout) inflater.inflate(resources.getIdentifier("camera_overlay", "layout", package_name),
-            null, false);
+                null, false);
 
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
 
         // Gets a reference to the loading dialog
         loadingDialogHandler.mLoadingDialogContainer = mUILayout
-            .findViewById(resources.getIdentifier("loading_indicator", "id", package_name));
+                .findViewById(resources.getIdentifier("loading_indicator", "id", package_name));
 
         // Shows the loading indicator at start
         loadingDialogHandler
-            .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
+                .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
-        cwv = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
-        cwv.setBackgroundColor(Color.TRANSPARENT);
-        cwv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        cwv = makeWebView();
 
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -395,7 +384,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     {
         TrackerManager tManager = TrackerManager.getInstance();
         ObjectTracker objectTracker = (ObjectTracker) tManager
-            .getTracker(ObjectTracker.getClassType());
+                .getTracker(ObjectTracker.getClassType());
         if (objectTracker == null)
             return false;
 
@@ -420,7 +409,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         }
 
         if (!mCurrentDataset.load(
-            mDatasetStrings.get(mCurrentDatasetSelectionIndex), storage_type))
+                mDatasetStrings.get(mCurrentDatasetSelectionIndex), storage_type))
             return false;
 
 
@@ -441,7 +430,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             String name = "Current Dataset : " + obj_name;
             trackable.setUserData(name);
             Log.d(LOGTAG, "UserData:Set the following user data "
-                + (String) trackable.getUserData());
+                    + (String) trackable.getUserData());
         }
 
         return true;
@@ -482,14 +471,14 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
         TrackerManager tManager = TrackerManager.getInstance();
         ObjectTracker objectTracker = (ObjectTracker) tManager
-            .getTracker(ObjectTracker.getClassType());
+                .getTracker(ObjectTracker.getClassType());
         if (objectTracker == null)
             return false;
 
         if (mCurrentDataset != null && mCurrentDataset.isActive())
         {
             if (objectTracker.getActiveDataSet().equals(mCurrentDataset)
-                && !objectTracker.deactivateDataSet(mCurrentDataset))
+                    && !objectTracker.deactivateDataSet(mCurrentDataset))
             {
                 result = false;
             } else if (!objectTracker.destroyDataSet(mCurrentDataset))
@@ -519,7 +508,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             // BEFORE the camera is started and video
             // background is configured.
             addContentView(mGlView, new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT));
+                    LayoutParams.MATCH_PARENT));
 
             // Sets the UILayout to be drawn in front of the camera
             mUILayout.bringToFront();
@@ -536,7 +525,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             }
 
             boolean result = CameraDevice.getInstance().setFocusMode(
-                CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
+                    CameraDevice.FOCUS_MODE.FOCUS_MODE_CONTINUOUSAUTO);
 
             if (result)
                 mContAutofocus = true;
@@ -568,20 +557,20 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
                 // Generates an Alert Dialog to show the error message
                 AlertDialog.Builder builder = new AlertDialog.Builder(
-                    ImageTargets.this);
+                        ImageTargets.this);
                 builder
-                    .setMessage(errorMessage)
-                    .setTitle("Error")
-                    .setCancelable(false)
-                    .setIcon(0)
-                    .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                finish();
-                            }
-                        });
+                        .setMessage(errorMessage)
+                        .setTitle("Error")
+                        .setCancelable(false)
+                        .setIcon(0)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog, int id)
+                                    {
+                                        finish();
+                                    }
+                                });
 
                 mErrorDialog = builder.create();
                 mErrorDialog.show();
@@ -598,9 +587,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             mSwitchDatasetAsap = false;
             TrackerManager tm = TrackerManager.getInstance();
             ObjectTracker ot = (ObjectTracker) tm.getTracker(ObjectTracker
-                .getClassType());
+                    .getClassType());
             if (ot == null || mCurrentDataset == null
-                || ot.getActiveDataSet() == null)
+                    || ot.getActiveDataSet() == null)
             {
                 Log.d(LOGTAG, "Failed to swap datasets");
                 return;
@@ -626,8 +615,8 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         if (tracker == null)
         {
             Log.e(
-                LOGTAG,
-                "Tracker not initialized. Tracker already initialized or the camera is already started");
+                    LOGTAG,
+                    "Tracker not initialized. Tracker already initialized or the camera is already started");
             result = false;
         } else
         {
@@ -679,7 +668,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         Intent mIntent = new Intent();
         mIntent.putExtra("name", "CLOSED");
         setResult(VuforiaBackgroundPlugin.MANUAL_CLOSE_RESULT, mIntent);
-        Vuforia.deinit();
+        if(!initializing){
+            Vuforia.deinit();
+        }
         super.onBackPressed();
     }
 
@@ -717,7 +708,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         String package_name = getApplication().getPackageName();
         Resources resources = getApplication().getResources();
 
-        SystemWebView webView = (SystemWebView) findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
+        SystemWebView webView = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
+        webView.setBackgroundColor(Color.TRANSPARENT);
+        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
         return new CordovaWebViewImpl(new SystemWebViewEngine(webView));
     }
 
@@ -726,4 +719,10 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         appView.getView().requestFocusFromTouch();
     }
 
+    /**
+     * Marks Vuforia iniatlization as finished.
+     */
+    public void initializingDone(){
+        initializing = false;
+    }
 }

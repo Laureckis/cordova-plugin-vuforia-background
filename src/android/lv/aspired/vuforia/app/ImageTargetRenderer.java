@@ -109,6 +109,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer
         mActivity.loadingDialogHandler
             .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
 
+        mActivity.initializingDone();
         VuforiaBackgroundPlugin.triggerVuforiaReady();
     }
 
