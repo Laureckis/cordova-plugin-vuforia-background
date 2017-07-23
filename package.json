@@ -1,5 +1,5 @@
 {
-  "name": "cordova-plugin-vuforia-background", "description": "Cordova Vuforia Background Plugin", "version": "0.0.10", "homepage": "https://github.com/laureckis/cordova-plugin-vuforia-background", "repository": {
+  "name": "cordova-plugin-vuforia-background", "description": "Cordova Vuforia Background Plugin", "version": "0.0.11", "homepage": "https://github.com/laureckis/cordova-plugin-vuforia-background", "repository": {
     "type": "git", "url": "git@github.com:laureckis/cordova-plugin-vuforia-background.git"
   }, "bugs": {
     "url": "https://github.com/laureckis/cordova-plugin-vuforia-background/issues"

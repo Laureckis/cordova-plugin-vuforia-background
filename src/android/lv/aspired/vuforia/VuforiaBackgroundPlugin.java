@@ -259,7 +259,7 @@ public class VuforiaBackgroundPlugin extends CordovaPlugin {
             name = data.getStringExtra("name");
         }
 
-        Log.d(LOGTAG, "Plugin received '" + name + "' from Vuforia.");
+        Log.d(LOGTAG, "Plugin received '" + name + "' from Vuforia."+requestCode+" "+resultCode);
 
         // Check which request we're responding to
         if (requestCode == IMAGE_REC_REQUEST) {

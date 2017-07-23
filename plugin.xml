@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-vuforia-background"
-        version="0.0.10">
+        version="0.0.11">
     <name>Vuforia Background</name>
     <description>Cordova Vuforia Background Plugin</description>
     <license>MIT</license>
@@ -14,7 +14,7 @@
     <author>Aļģis Laureckis</author>
 
     <info>
-        Cordova Vuforia Background Plugin version 0.0.10, Copyright (C) 2016 Matthew Rayner
+        Cordova Vuforia Background Plugin version 0.0.11, Copyright (C) 2016 Matthew Rayner
         based on https://github.com/mattrayner/cordova-plugin-vuforia by Matt Rayner
         Cordova Vuforia Background Plugin comes with ABSOLUTELY NO WARRANTY; see the
         LICENSE file for more information.
@@ -40,7 +40,7 @@
             <activity
                 android:name="lv.aspired.vuforia.app.ImageTargets"
                 android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize"
-                android:noHistory="true">
+                android:launchMode="singleInstance">
             </activity>
         </config-file>
 

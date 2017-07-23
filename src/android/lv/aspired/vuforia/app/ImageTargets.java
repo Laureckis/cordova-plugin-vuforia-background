@@ -9,6 +9,7 @@ package lv.aspired.vuforia.app;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,7 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -63,6 +65,8 @@ import lv.aspired.vuforia.app.utils.Texture;
 import lv.aspired.vuforia.VuforiaBackgroundPlugin;
 
 import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaWebViewImpl;
 import org.apache.cordova.PluginResult;
@@ -115,6 +119,11 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     // Vuforia license key
     String mLicenseKey;
 
+    /**
+     * The cordvoa webview.
+     */
+    private SystemWebView cwv;
+
     // Called when the activity first starts or the user navigates back to an
     // activity.
     @Override
@@ -122,6 +131,8 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     {
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
+
+        startLoadingAnimation();
 
         //Grab a reference to our Intent so that we can get the extra data passed into it
         Intent intent = getIntent();
@@ -161,8 +172,6 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         //Get the passed in targets file
         String target_file = intent.getStringExtra("IMAGE_TARGET_FILE");
         mTargets = intent.getStringExtra("IMAGE_TARGETS");
-
-        startLoadingAnimation();
 
         Log.d(LOGTAG, "MRAY :: VUFORIA RECEIVED FILE: " + target_file);
         Log.d(LOGTAG, "MRAY :: VUTORIA TARGETS: " + mTargets);
@@ -247,7 +256,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             vuforiaAppSession.resumeAR();
         } catch (ApplicationException e)
         {
-            Log.e(LOGTAG, e.getString());
+            Log.e(LOGTAG, "Could not resume: "+e.getString());
         }
 
         // Resume the GL view:
@@ -302,7 +311,7 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
             vuforiaAppSession.pauseAR();
         } catch (ApplicationException e)
         {
-            Log.e(LOGTAG, e.getString());
+            Log.e(LOGTAG, "Could not pause "+e.getString());
         }
     }
 
@@ -312,6 +321,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     public void onDestroy()
     {
         Log.d(LOGTAG, "onDestroy");
+
+        ((ViewGroup) cwv.getParent()).removeView(cwv);
+
         super.onDestroy();
 
         try
@@ -368,9 +380,9 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
         loadingDialogHandler
             .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
-        SystemWebView wv = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
-        wv.setBackgroundColor(Color.TRANSPARENT);
-        wv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        cwv = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
+        cwv.setBackgroundColor(Color.TRANSPARENT);
+        cwv.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
         // Adds the inflated layout to the view
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -713,4 +725,5 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
     protected void createViews() {
         appView.getView().requestFocusFromTouch();
     }
+
 }
