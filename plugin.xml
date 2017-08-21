@@ -80,7 +80,7 @@
     </platform>
 
     <!-- ios -->
-<!--    <platform name="ios">
+    <platform name="ios">
          config file 
         <config-file target="config.xml" parent="/*">
             <feature name="VuforiaPlugin">
@@ -122,7 +122,7 @@
 
         <resource-file src="src/ios/Assets/ImageTargets/close-button.png" target-dir="Resources" />
         <resource-file src="src/ios/Assets/ImageTargets/iOSDevices.png" target-dir="Resources" />
-    </platform>-->
+    </platform>
 
     <dependency id="cordova-plugin-vuforia-sdk" version="6.x.x" />
 </plugin>
