@@ -50,6 +50,8 @@
 
         <!-- Assets -->
         <resource-file src="src/android/res/layout/camera_overlay.xml" target="res/layout/camera_overlay.xml" />
+        <resource-file src="src/android/res/drawable/cpvb_background.xml" target="res/drawable/cpvb_background.xml" />
+        <resource-file src="src/android/res/drawable/cpvb_bg_pattern.png" target="res/drawable/cpvb_bg_pattern.png" />
 
         <source-file src="src/android/lv/aspired/vuforia/app/ImageTargets.java"
                      target-dir="src/lv/aspired/vuforia/app" />

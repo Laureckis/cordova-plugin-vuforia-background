@@ -4,13 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ProgressBar
-        style="@android:style/Widget.ProgressBar"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:id="@+id/loading_indicator"
+        android:layout_height="match_parent"
+        android:background="@drawable/cpvb_background"
+        android:orientation="vertical" >
+    </LinearLayout>
+<!--    <ProgressBar
+        style="@android:style/Widget.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true" />-->
 
     <org.apache.cordova.engine.SystemWebView
         android:id="@+id/cordova_web_view"
