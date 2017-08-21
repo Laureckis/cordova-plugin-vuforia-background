@@ -40,7 +40,8 @@
             <activity
                 android:name="lv.aspired.vuforia.app.ImageTargets"
                 android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize"
-                android:launchMode="singleInstance">
+                android:launchMode="singleTask"
+                android:windowSoftInputMode="adjustPan" >
             </activity>
         </config-file>
 
