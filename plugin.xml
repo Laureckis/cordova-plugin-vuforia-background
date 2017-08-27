@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-vuforia-background"
-        version="0.0.13">
+        version="0.0.14">
     <name>Vuforia Background</name>
     <description>Cordova Vuforia Background Plugin</description>
     <license>MIT</license>
@@ -81,20 +81,18 @@
 
     <!-- ios -->
     <platform name="ios">
-         config file 
         <config-file target="config.xml" parent="/*">
-            <feature name="VuforiaPlugin">
-                <param name="ios-package" value="VuforiaPlugin" />
+            <feature name="VuforiaBackgroundPlugin">
+                <param name="ios-package" value="VuforiaBackgroundPlugin" />
             </feature>
         </config-file>
 
-         Add a value to our Info.plist file for iOS 10+ security permissions 
         <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
             <string>To scan for images.</string>
         </config-file>
 
-        <header-file src="src/ios/VuforiaPlugin.h" />
-        <source-file src="src/ios/VuforiaPlugin.m" />
+        <header-file src="src/ios/VuforiaBackgroundPlugin.h" />
+        <source-file src="src/ios/VuforiaBackgroundPlugin.m" />
         <header-file src="src/ios/ViewController.h" />
         <source-file src="src/ios/ViewController.mm" />
 
@@ -110,12 +108,11 @@
         <source-file src="src/ios/Utils/GLResourceHandler.h" />
 
 
-        <resource-file src="src/ios/VuforiaPlugin.bundle" />
+        <resource-file src="src/ios/VuforiaBackgroundPlugin.bundle" />
         <resource-file src="src/ios/Utils/shaders/Line.fragsh" target-dir="lv.aspired.vuforia/shader" />
         <resource-file src="src/ios/Utils/shaders/Line.vertsh" target-dir="lv.aspired.vuforia/shader" />
         <resource-file src="src/ios/Utils/shaders/Simple.fragsh" target-dir="lv.aspired.vuforia" />
         <resource-file src="src/ios/Utils/shaders/Simple.vertsh" target-dir="lv.aspired.vuforia" />
-
 
         <resource-file src="targets/PluginTest.dat" target-dir="lv.aspired.vuforia" />
         <resource-file src="targets/PluginTest.xml" target-dir="lv.aspired.vuforia" />

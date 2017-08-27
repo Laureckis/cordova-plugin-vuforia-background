@@ -11,6 +11,7 @@
 #import <Vuforia/DataSet.h>
 
 @interface ImageTargetsViewController : UIViewController <ApplicationControl>{
+    
     CGRect viewFrame;
     ImageTargetsEAGLView* eaglView;
     Vuforia::DataSet*  dataSetCurrent;
@@ -34,9 +35,11 @@
 
 @property (nonatomic) bool delaying;
 
+- (void) hideBackground;
 - (id)initWithOverlayOptions:(NSDictionary *)overlayOptions vuforiaLicenseKey:(NSString *)vuforiaLicenseKey;
 - (bool) doStartTrackers;
 - (bool) doStopTrackers;
 - (bool) doUpdateTargets:(NSArray *)targets;
-
+- (void) pauseAR;
+- (void) resumeAR;
 @end

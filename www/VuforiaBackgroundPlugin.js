@@ -143,19 +143,22 @@ var VuforiaBackgroundPlugin = {
     }
 };
 
-// prepare the VuforiaReady event
-var vuforiaReadyEvent = new Event('vuforiaready');
-VuforiaBackgroundPlugin.exec(function () {
-    // called when Vuforia finishes loading
-    document.dispatchEvent(vuforiaReadyEvent);
-}, function () {}, 'prepareVuforiaReadyEvent', []);
 
-// prepare marker detected events
-VuforiaBackgroundPlugin.exec(function (result) {
-    var detected = new CustomEvent('vuforiamarker', {detail: result});
-    
-    // called when Vuforia finishes loading
-    document.dispatchEvent(detected);
-}, function () {}, 'prepareVuforiaMarkerEvent', []);
+if(window.location.href.indexOf("vuforia_index.html") > 0){
+    // prepare the VuforiaReady event
+    var vuforiaReadyEvent = new Event('vuforiaready');
+    VuforiaBackgroundPlugin.exec(function () {
+        // called when Vuforia finishes loading
+        document.dispatchEvent(vuforiaReadyEvent);
+    }, function () {}, 'prepareVuforiaReadyEvent', []);
+
+    // prepare marker detected events
+    VuforiaBackgroundPlugin.exec(function (result) {
+        var detected = new CustomEvent('vuforiamarker', {detail: result});
+
+        // called when Vuforia finishes loading
+        document.dispatchEvent(detected);
+    }, function () {}, 'prepareVuforiaMarkerEvent', []);
+}
 
 module.exports = VuforiaBackgroundPlugin;

@@ -14,6 +14,7 @@ and other countries. Trademarks of QUALCOMM Incorporated are used with permissio
 #import <Vuforia/VideoBackgroundConfig.h>
 #import <Vuforia/UpdateCallback.h>
 
+
 namespace {
     // --- Data private to this unit ---
 
@@ -532,11 +533,13 @@ namespace {
     // Start the camera.  This causes Vuforia to locate our EAGLView in the view
     // hierarchy, start a render thread, and then call renderFrameVuforia on the
     // view periodically
+    //andHeight:self.mARViewBoundsSize.height
     if (! [self startCamera: camera viewWidth:self.mARViewBoundsSize.width andHeight:self.mARViewBoundsSize.height error:error]) {
         return NO;
     }
     self.cameraIsActive = YES;
     self.cameraIsStarted = YES;
+    
 
     return YES;
 }

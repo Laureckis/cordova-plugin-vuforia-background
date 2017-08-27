@@ -29,7 +29,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor blackColor];
+    //startview color before camera loads 1 to be white
+    self.view.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.0f];
 
     NSLog(@"Vuforia Plugin :: viewController did load");
     self.launchedCamera = false;
@@ -62,8 +63,18 @@
     return [self.imageTargetsViewController doStartTrackers];
 }
 
+- (void) pauseAR {
+    [self.imageTargetsViewController pauseAR];
+}
+
+- (void) resumeAR {
+    [self.imageTargetsViewController resumeAR];
+}
+
 - (bool) updateTargets:(NSArray *)targets {
-    return [self.imageTargetsViewController doUpdateTargets:targets];
+    bool result = [self.imageTargetsViewController doUpdateTargets:targets];
+    NSLog(@"Result in view %d", result);
+    return result;
 }
 
 - (void) close{

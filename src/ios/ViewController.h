@@ -10,6 +10,9 @@
 -(id)initWithFileName:(NSString *)fileName targetNames:(NSArray *)imageTargetNames overlayOptions:(NSDictionary*)overlayOptions vuforiaLicenseKey:(NSString *)vuforiaLicenseKey;
 - (bool) stopTrackers;
 - (bool) startTrackers;
+- (void) pauseAR;
+- (void) resumeAR;
 - (bool) updateTargets:(NSArray *)targets;
 - (void) close;
+
 @end

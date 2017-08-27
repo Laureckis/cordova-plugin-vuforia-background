@@ -7,6 +7,7 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 #import "GLResourceHandler.h"
+#import "VuforiaBackgroundPlugin.h"
 
 #import <UIKit/UIKit.h>
 #import "ImageTargetsViewController.h"
@@ -19,11 +20,12 @@
 #import <Vuforia/CameraDevice.h>
 
 #import <Vuforia/Vuforia_iOS.h>
+#import <Cordova/CDVViewController.h>
 
 @interface ImageTargetsViewController ()
 
 @property (assign, nonatomic) id<GLResourceHandler> glResourceHandler;
-
+@property CDVViewController* cdvViewController;
 
 @end
 
@@ -58,8 +60,14 @@
         // get whether the user opted to show the device icon
 
         // Create the EAGLView with the screen dimensions
-        CGRect screenBounds = [[UIScreen mainScreen] bounds];
-        viewFrame = screenBounds;
+        //CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        //CGRect frame=CGRectMake(0, 0, 320, 460);
+        //viewFrame = frame;
+        
+        viewFrame.size.width = [[UIScreen mainScreen] bounds].size.width;
+        viewFrame.size.height = [[UIScreen mainScreen] bounds].size.height;
+        //viewFrame.origin.y = -300;
+
 
         // If this device has a retina display, scale the view bounds that will
         // be passed to Vuforia; this allows it to calculate the size and position of
@@ -99,80 +107,99 @@
     }else{
 
         // set up the overlay back bar
+        //viewController.view.frame = CGRectMake(0, 0, 320, 480);
+        
+        
+        //bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
 
-        bool showDevicesIcon = [[self.overlayOptions objectForKey:@"showDevicesIcon"] integerValue];
-
-        UIView *vuforiaBarView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 75)];
-        vuforiaBarView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5f];
-        vuforiaBarView.tag = 8;
-        [self.view addSubview:vuforiaBarView];
+        //added custom height to make all app clikable
+//        UIView *vuforiaBarView=[[UIView alloc]initWithFrame:CGRectMake(0, 50, self.view.bounds.size.width, self.view.bounds.size.height)];
+//        vuforiaBarView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.5f];
+//        vuforiaBarView.tag = 8;
+//        [self.view addSubview:vuforiaBarView];
 
         // set up the close button
-        UIImage * buttonImage = [UIImage imageNamed:@"close-button.png"];
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [button addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
-        [button setTitle:@"" forState:UIControlStateNormal];
-        [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-        button.frame = CGRectMake([[UIScreen mainScreen] bounds].size.width - 65, (vuforiaBarView.frame.size.height / 2.0) - 30, 60, 60);
-        button.tag = 10;
-        [vuforiaBarView addSubview:button];
+//        UIImage * buttonImage = [UIImage imageNamed:@"close-button.png"];
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        [button addTarget:self action:@selector(buttonPressed) forControlEvents:UIControlEventTouchUpInside];
+//        [button setTitle:@"" forState:UIControlStateNormal];
+//        [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+//        //button.frame = CGRectMake([[UIScreen mainScreen] bounds].size.width - 65, (vuforiaBarView.frame.size.height / 2.0) - 30, 60, 60);
+//        //button.tag = 10;
+//        [vuforiaBarView addSubview:button];
 
         // if the device logo is set by the user
-        if(showDevicesIcon) {
-            UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-            imageView.frame = CGRectMake(10, (vuforiaBarView.frame.size.height / 2.0) - 25, 50, 50);
-            imageView.tag = 11;
-            [vuforiaBarView addSubview:imageView];
-        }
+//        if(showDevicesIcon) {
+//            UIImage *image = [UIImage imageNamed:@"iOSDevices.png"];
+//            UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//            imageView.frame = CGRectMake(10, (vuforiaBarView.frame.size.height / 2.0) - 25, 50, 50);
+//            imageView.tag = 11;
+//            [vuforiaBarView addSubview:imageView];
+//        }
 
         // set up the detail label
-        UILabel *detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, vuforiaBarView.frame.size.width / 2 - button.frame.size.width, 60)];
-        [detailLabel setTextColor:[UIColor colorWithRed:0.74 green:0.74 blue:0.74 alpha:1.0]];
-        [detailLabel setBackgroundColor:[UIColor clearColor]];
-        [detailLabel setFont:[UIFont fontWithName: @"Trebuchet MS" size: 15.0f]];
-
-        // get and set the overlay text (if passed by user). if the text is empty, make the back bar transparent
-        NSString *overlayText = [self.overlayOptions objectForKey:@"overlayText"];
-
-        [detailLabel setText: overlayText];
-        detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        detailLabel.numberOfLines = 0;
-        detailLabel.tag = 9;
-        [detailLabel sizeToFit];
-        if([overlayText length] == 0) {
-            vuforiaBarView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.0f];
-        }
+//        UILabel *detailLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, vuforiaBarView.frame.size.width / 2 - button.frame.size.width, 60)];
+//        [detailLabel setTextColor:[UIColor colorWithRed:0.74 green:0.74 blue:0.74 alpha:1.0]];
+//        [detailLabel setBackgroundColor:[UIColor clearColor]];
+//        [detailLabel setFont:[UIFont fontWithName: @"Trebuchet MS" size: 15.0f]];
+//
+//        // get and set the overlay text (if passed by user). if the text is empty, make the back bar transparent
+//        NSString *overlayText = [self.overlayOptions objectForKey:@"overlayText"];
+//
+//        [detailLabel setText: overlayText];
+//        detailLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//        detailLabel.numberOfLines = 0;
+//        detailLabel.tag = 9;
+//        [detailLabel sizeToFit];
+        
+        //for now it takes overaly text
+        //if([overlayText length] == 0) {
+            //vuforiaBarView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.0f];
+        //}
 
         // if the device icon is to be shown, adapt the text to fit.
-        CGRect detailFrame = detailLabel.frame;
-        if(showDevicesIcon) {
-            detailFrame = CGRectMake(70, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
-        }
-        else {
-            detailFrame = CGRectMake(20, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
-        }
-        detailLabel.frame = detailFrame;
-        [detailLabel sizeToFit];
-        [vuforiaBarView addSubview:detailLabel];
+//        CGRect detailFrame = detailLabel.frame;
+//        if(showDevicesIcon) {
+//            detailFrame = CGRectMake(70, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
+//        }
+//        else {
+//            detailFrame = CGRectMake(20, 10, [[UIScreen mainScreen] bounds].size.width - 130, detailLabel.frame.size.height);
+//        }
+//        detailLabel.frame = detailFrame;
+//        [detailLabel sizeToFit];
+//        [vuforiaBarView addSubview:detailLabel];
+//
+//        if(detailLabel.frame.size.height > button.frame.size.height) {
+//            CGRect vuforiaFrame = vuforiaBarView.frame;
+//            vuforiaFrame.size.height = detailLabel.frame.size.height + 25;
+//            vuforiaBarView.frame = vuforiaFrame;
+//
+//            CGRect buttonFrame = button.frame;
+//            buttonFrame.origin.y = detailLabel.frame.size.height / 3.0;
+//            button.frame = buttonFrame;
+//
+//            if(showDevicesIcon) {
+//                UIImageView *imageView = (UIImageView *)[eaglView viewWithTag:11];
+//                CGRect imageFrame = imageView.frame;
+//                imageFrame.origin.y = detailLabel.frame.size.height / 3.0;
+//                imageView.frame = imageFrame;
+//            }
+//        }
+        //self.view.opaque=NO;
+        //[self.view setBackgroundColor:[[UIColor redColor] colorWithAlphaComponent:0.5f]];
 
-        if(detailLabel.frame.size.height > button.frame.size.height) {
-            CGRect vuforiaFrame = vuforiaBarView.frame;
-            vuforiaFrame.size.height = detailLabel.frame.size.height + 25;
-            vuforiaBarView.frame = vuforiaFrame;
-
-            CGRect buttonFrame = button.frame;
-            buttonFrame.origin.y = detailLabel.frame.size.height / 3.0;
-            button.frame = buttonFrame;
-
-            if(showDevicesIcon) {
-                UIImageView *imageView = (UIImageView *)[eaglView viewWithTag:11];
-                CGRect imageFrame = imageView.frame;
-                imageFrame.origin.y = detailLabel.frame.size.height / 3.0;
-                imageView.frame = imageFrame;
-            }
-        }
+        
+        [self.view addSubview:_cdvViewController.view];
+        _cdvViewController.webView.opaque= NO;
+        _cdvViewController.webView.backgroundColor = [UIColor clearColor];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self hideBackground];
+            [VuforiaBackgroundPlugin triggerReadyEvent];
+        });
+        
     }
+    
 }
 
 -(void)buttonPressed {
@@ -184,6 +211,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CloseRequest" object:self userInfo:userInfo];
 }
 
+- (void) hideBackground {
+    
+    NSLog(@"Hiding white background");
+
+    self.view.opaque = NO;
+    self.view.backgroundColor = [UIColor clearColor];
+}
 
 - (void) pauseAR {
     NSError * error = nil;
@@ -208,6 +242,7 @@
 
     [vapp release];
     [eaglView release];
+    [_cdvViewController release];
 
     [super dealloc];
 }
@@ -215,12 +250,21 @@
 - (void)loadView
 {
     // Create the EAGLView
+    
+    
+    _cdvViewController = [CDVViewController new];
+    _cdvViewController.wwwFolderName = @"www";
+    _cdvViewController.startPage = @"vuforia_index.html";
+
+    
     eaglView = [[ImageTargetsEAGLView alloc] initWithFrame:viewFrame appSession:vapp];
     [self setView:eaglView];
     self.glResourceHandler = eaglView;
+    
+    //[eaglView setBackgroundColor:[UIColor whiteColor]];
 
     // show loading animation while AR is being initialized
-    [self showLoadingAnimation];
+    //[self showLoadingAnimation];
 
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     [vapp initAR:Vuforia::GL_20 ARViewBoundsSize:viewFrame.size orientation:orientation];
@@ -234,8 +278,11 @@
     [super viewDidLoad];
 
     // Do any additional setup after loading the view.
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     [self.view addGestureRecognizer:tapGestureRecognizer];
+    
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [self.view setOpaque:YES];
 
     NSLog(@"self.navigationController.navigationBarHidden: %s", self.navigationController.navigationBarHidden ? "Yes" : "No");
 
@@ -350,9 +397,9 @@
 // callback: the AR initialization is done
 - (void) onInitARDone:(NSError *)initError {
     [self hideLoadingAnimation];
-
+    //[VuforiaBackgroundPlugin trig]
+    
     if (initError == nil) {
-
         NSError * error = nil;
         [vapp startAR:Vuforia::CameraDevice::CAMERA_DIRECTION_BACK error:&error];
 
@@ -758,12 +805,12 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return YES;
+    return NO;
 }
 
 -(bool) doUpdateTargets:(NSArray *)targets {
     self.imageTargetNames = targets;
-
+    NSLog(@"Called in image tartger view ctl");
     return TRUE;
 }
 @end
