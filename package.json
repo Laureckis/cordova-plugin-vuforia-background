@@ -1,27 +1,46 @@
 {
-  "name": "cordova-plugin-vuforia-background", "description": "Cordova Vuforia Background Plugin", "version": "0.0.14", "homepage": "https://github.com/laureckis/cordova-plugin-vuforia-background", "repository": {
-    "type": "git", "url": "git@github.com:laureckis/cordova-plugin-vuforia-background.git"
-  }, "bugs": {
-    "url": "https://github.com/laureckis/cordova-plugin-vuforia-background/issues"
-  }, "cordova": {
-    "id": "cordova-plugin-vuforia-background", "platforms": [
-      "android"
-    ]
-  }, "keywords": [
-    "cordova", "vuforia", "ecosystem:cordova", "cordova-android", "cordova-ios", "image", "recognition", "mattrayner", "background"
-  ], "engines": {
-    "cordovaDependencies": {
-      ">=0.0.1": {
-        "cordova": ">=5.0.0"
-      }, "<2.0.0": {
-        "cordova-ios": ">=3.0.0 <4.0.0", "cordova-android": ">=4.0.0 <5.0.0"
-      }, ">=2.0.0": {
-        "cordova": ">=6.0.0", "cordova-ios": ">=4.0.0", "cordova-android": ">=5.0.0"
-      }, ">=3.0.0": {
-        "cordova": ">=6.1.0"
-      }
+    "name": "cordova-plugin-vuforia-background",
+    "description": "Cordova Vuforia Background Plugin",
+    "version": "0.0.15",
+    "homepage": "https://github.com/laureckis/cordova-plugin-vuforia-background",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:laureckis/cordova-plugin-vuforia-background.git"
+    },
+    "bugs": {
+        "url": "https://github.com/laureckis/cordova-plugin-vuforia-background/issues"
+    },
+    "cordova": {
+        "id": "cordova-plugin-vuforia-background",
+        "platforms": [
+            "android"
+        ]
+    },
+    "keywords": [
+        "cordova", "vuforia", "ecosystem:cordova", "cordova-android", "cordova-ios", "image", "recognition", "mattrayner", "background"
+    ],
+    "engines": {
+        "cordovaDependencies": {
+            ">=0.0.1": {
+                "cordova": ">=5.0.0"
+            },
+            "<2.0.0": {
+                "cordova-ios": ">=3.0.0 <4.0.0",
+                "cordova-android": ">=4.0.0 <5.0.0"
+            },
+            ">=2.0.0": {
+                "cordova": ">=6.0.0",
+                "cordova-ios": ">=4.0.0",
+                "cordova-android": ">=5.0.0"
+            },
+            ">=3.0.0": {
+                "cordova": ">=6.1.0"
+            }
+        }
+    },
+    "author": "Aspired Ltd.",
+    "license": "MIT",
+    "dependencies": {
+        "cordova-plugin-vuforia-sdk": "6.x.x"
     }
-  }, "author": "Aspired Ltd.", "license": "MIT", "dependencies": {
-    "cordova-plugin-vuforia-sdk": "6.x.x"
-  }
 }

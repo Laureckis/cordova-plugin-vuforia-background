@@ -738,7 +738,8 @@ public class ImageTargets extends CordovaActivity implements ApplicationControl
 
         SystemWebView webView = (SystemWebView) mUILayout.findViewById(resources.getIdentifier("cordova_web_view", "id", package_name));
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        //webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        
         return new CordovaWebViewImpl(new SystemWebViewEngine(webView));
     }
 
